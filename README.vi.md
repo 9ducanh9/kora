@@ -42,6 +42,15 @@ DeepSeek ở môi trường local với API key riêng. Tên miền `kora.aurel.
 
 ## Cách hoạt động
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/kora-workflow-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/kora-workflow-light.svg" />
+  <img alt="Luồng Kora: mô tả, trích xuất, kiểm tra, sắp xếp, chỉnh sửa và xuất kết quả." src="docs/images/kora-workflow-light.svg" />
+</picture>
+
+Hình được tạo bằng bộ layout và xuất SVG của Kora. Có thể tải
+[JSON chỉnh sửa được](docs/images/kora-workflow.json) rồi dùng nút Import trong editor.
+
 AI tạo mô hình kiến trúc; Kora tính vị trí, kích thước và đường nối. Thao tác sửa
 đi qua lịch sử lệnh nên một lần kéo, đổi tên hoặc sắp xếp lại có thể hoàn tác
 bằng một thao tác. Sơ đồ được lưu trong trình duyệt, chưa có cơ sở dữ liệu lưu

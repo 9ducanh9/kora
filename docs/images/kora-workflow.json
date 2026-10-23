@@ -1,0 +1,184 @@
+{
+  "version": "1.0",
+  "semantic": {
+    "scope": {
+      "type": "custom",
+      "title": "Kora generation workflow"
+    },
+    "nodes": {
+      "describe": {
+        "id": "describe",
+        "label": "Describe",
+        "subtitle": "Natural language",
+        "kind": "generic",
+        "assetId": "generic.component"
+      },
+      "extract": {
+        "id": "extract",
+        "label": "Extract",
+        "subtitle": "DeepSeek",
+        "kind": "generic",
+        "assetId": "generic.component"
+      },
+      "validate": {
+        "id": "validate",
+        "label": "Validate",
+        "subtitle": "Schema + flows",
+        "kind": "generic",
+        "assetId": "generic.component"
+      },
+      "layout": {
+        "id": "layout",
+        "label": "Arrange",
+        "subtitle": "Assets + ELK",
+        "kind": "generic",
+        "assetId": "generic.component"
+      },
+      "edit": {
+        "id": "edit",
+        "label": "Edit & export",
+        "subtitle": "JSON / SVG / PNG",
+        "kind": "generic",
+        "assetId": "generic.component"
+      }
+    },
+    "connections": {
+      "step-1": {
+        "id": "step-1",
+        "source": "describe",
+        "target": "extract",
+        "relationship": "data"
+      },
+      "step-2": {
+        "id": "step-2",
+        "source": "extract",
+        "target": "validate",
+        "relationship": "data"
+      },
+      "step-3": {
+        "id": "step-3",
+        "source": "validate",
+        "target": "layout",
+        "relationship": "data"
+      },
+      "step-4": {
+        "id": "step-4",
+        "source": "layout",
+        "target": "edit",
+        "relationship": "data"
+      }
+    },
+    "containers": {}
+  },
+  "presentation": {
+    "nodes": {
+      "describe": {
+        "x": 50,
+        "y": 50,
+        "width": 96,
+        "height": 92
+      },
+      "edit": {
+        "x": 682,
+        "y": 50,
+        "width": 96,
+        "height": 92
+      },
+      "extract": {
+        "x": 208,
+        "y": 50,
+        "width": 96,
+        "height": 92
+      },
+      "layout": {
+        "x": 524,
+        "y": 50,
+        "width": 96,
+        "height": 92
+      },
+      "validate": {
+        "x": 366,
+        "y": 50,
+        "width": 96,
+        "height": 92
+      }
+    },
+    "containers": {},
+    "connections": {
+      "step-1": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "4dd4449e75154a5825539a734999a58ba77b6d28545e616c4f136857d5d5239c",
+          "points": [
+            {
+              "x": 146,
+              "y": 96
+            },
+            {
+              "x": 208,
+              "y": 96
+            }
+          ]
+        }
+      },
+      "step-2": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "4dd4449e75154a5825539a734999a58ba77b6d28545e616c4f136857d5d5239c",
+          "points": [
+            {
+              "x": 304,
+              "y": 96
+            },
+            {
+              "x": 366,
+              "y": 96
+            }
+          ]
+        }
+      },
+      "step-3": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "4dd4449e75154a5825539a734999a58ba77b6d28545e616c4f136857d5d5239c",
+          "points": [
+            {
+              "x": 462,
+              "y": 96
+            },
+            {
+              "x": 524,
+              "y": 96
+            }
+          ]
+        }
+      },
+      "step-4": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "4dd4449e75154a5825539a734999a58ba77b6d28545e616c4f136857d5d5239c",
+          "points": [
+            {
+              "x": 620,
+              "y": 96
+            },
+            {
+              "x": 682,
+              "y": 96
+            }
+          ]
+        }
+      }
+    },
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "metadata": {
+    "title": "Kora generation workflow",
+    "createdAt": "2026-10-23T10:20:16.000Z",
+    "updatedAt": "2026-10-23T10:20:16.000Z"
+  }
+}
