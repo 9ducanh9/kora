@@ -44,14 +44,6 @@ the editor link above uses the existing Vercel address.
 
 ## How it works
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/kora-workflow-dark.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="docs/images/kora-workflow-light.svg" />
-  <img alt="Kora workflow: describe, extract requirements and graph, validate schema and semantics, arrange AWS icons with ELK, then edit and export." src="docs/images/kora-workflow-light.svg" />
-</picture>
-
-Created with Kora's layout and SVG exporter. [Open the editable JSON](docs/images/kora-workflow.json) with the editor's Import button.
-
 AI supplies the architecture graph; Kora calculates the diagram geometry. Manual
 edits go through a command history so a move, rename, or layout can be undone as
 one operation. Diagrams are stored in the browser, without a hosted diagram

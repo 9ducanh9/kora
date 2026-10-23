@@ -21,8 +21,5 @@ docs/*
 !docs/specs/
 docs/images/*
 !docs/images/kora-editor.png
-!docs/images/kora-workflow-dark.svg
-!docs/images/kora-workflow-light.svg
-!docs/images/kora-workflow.json
 .DS_Store
 Thumbs.db
