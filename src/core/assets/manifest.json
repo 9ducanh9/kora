@@ -1,0 +1,511 @@
+{
+  "aws.cloudfront": {
+    "id": "aws.cloudfront",
+    "displayName": "Amazon CloudFront",
+    "category": "edge",
+    "assetPath": "/assets/aws/edge/aws-cloudfront.svg",
+    "aliases": [
+      "CloudFront",
+      "Amazon CloudFront",
+      "CDN"
+    ]
+  },
+  "aws.route53": {
+    "id": "aws.route53",
+    "displayName": "Amazon Route 53",
+    "category": "edge",
+    "assetPath": "/assets/aws/edge/aws-route53.svg",
+    "aliases": [
+      "Route 53",
+      "Route53",
+      "Amazon Route 53",
+      "DNS"
+    ]
+  },
+  "aws.waf": {
+    "id": "aws.waf",
+    "displayName": "AWS WAF",
+    "category": "security",
+    "assetPath": "/assets/aws/security/aws-waf.svg",
+    "aliases": [
+      "WAF",
+      "AWS WAF",
+      "Web Application Firewall"
+    ]
+  },
+  "aws.s3": {
+    "id": "aws.s3",
+    "displayName": "Amazon S3",
+    "category": "storage",
+    "assetPath": "/assets/aws/storage/aws-s3.svg",
+    "aliases": [
+      "S3",
+      "Amazon S3",
+      "S3 Bucket",
+      "Simple Storage Service"
+    ]
+  },
+  "aws.elb.alb": {
+    "id": "aws.elb.alb",
+    "displayName": "Application Load Balancer",
+    "category": "networking",
+    "assetPath": "/assets/aws/networking/aws-elb-alb.svg",
+    "aliases": [
+      "ALB",
+      "Application Load Balancer",
+      "AWS ALB",
+      "ELB ALB",
+      "Elastic Load Balancing"
+    ]
+  },
+  "aws.vpc": {
+    "id": "aws.vpc",
+    "displayName": "Virtual Private Cloud",
+    "category": "networking",
+    "assetPath": "/assets/aws/networking/aws-vpc.svg",
+    "aliases": [
+      "VPC",
+      "Virtual Private Cloud",
+      "AWS VPC"
+    ]
+  },
+  "aws.vpc.igw": {
+    "id": "aws.vpc.igw",
+    "displayName": "Internet Gateway",
+    "category": "networking",
+    "assetPath": "/assets/aws/networking/aws-vpc-igw.svg",
+    "aliases": [
+      "Internet Gateway",
+      "IGW",
+      "AWS IGW"
+    ]
+  },
+  "aws.vpc.nat-gateway": {
+    "id": "aws.vpc.nat-gateway",
+    "displayName": "NAT Gateway",
+    "category": "networking",
+    "assetPath": "/assets/aws/networking/aws-vpc-nat-gateway.svg",
+    "aliases": [
+      "NAT Gateway",
+      "NAT GW",
+      "NAT"
+    ]
+  },
+  "aws.subnet.public": {
+    "id": "aws.subnet.public",
+    "displayName": "Public Subnet",
+    "category": "networking",
+    "assetPath": "/assets/aws/networking/aws-subnet-public.svg",
+    "aliases": [
+      "Public Subnet",
+      "Public Subnet A",
+      "Public Subnet B"
+    ]
+  },
+  "aws.subnet.private": {
+    "id": "aws.subnet.private",
+    "displayName": "Private Subnet",
+    "category": "networking",
+    "assetPath": "/assets/aws/networking/aws-subnet-private.svg",
+    "aliases": [
+      "Private Subnet",
+      "Private Subnet A",
+      "Private Subnet B"
+    ]
+  },
+  "aws.ec2": {
+    "id": "aws.ec2",
+    "displayName": "Amazon EC2",
+    "category": "compute",
+    "assetPath": "/assets/aws/compute/aws-ec2.svg",
+    "aliases": [
+      "EC2",
+      "Amazon EC2",
+      "Virtual Server",
+      "Instance"
+    ]
+  },
+  "aws.ecs": {
+    "id": "aws.ecs",
+    "displayName": "Amazon ECS",
+    "category": "compute",
+    "assetPath": "/assets/aws/compute/aws-ecs.svg",
+    "aliases": [
+      "ECS",
+      "Amazon ECS",
+      "Elastic Container Service"
+    ]
+  },
+  "aws.ecs.fargate": {
+    "id": "aws.ecs.fargate",
+    "displayName": "AWS Fargate",
+    "category": "compute",
+    "assetPath": "/assets/aws/compute/aws-ecs-fargate.svg",
+    "aliases": [
+      "Fargate",
+      "ECS Fargate",
+      "AWS Fargate",
+      "Serverless Containers"
+    ]
+  },
+  "aws.lambda": {
+    "id": "aws.lambda",
+    "displayName": "AWS Lambda",
+    "category": "compute",
+    "assetPath": "/assets/aws/compute/aws-lambda.svg",
+    "aliases": [
+      "Lambda",
+      "AWS Lambda",
+      "Serverless Function",
+      "Function URL"
+    ]
+  },
+  "aws.rds": {
+    "id": "aws.rds",
+    "displayName": "Amazon RDS",
+    "category": "database",
+    "assetPath": "/assets/aws/database/aws-rds.svg",
+    "aliases": [
+      "RDS",
+      "Amazon RDS",
+      "Relational Database",
+      "PostgreSQL",
+      "MySQL"
+    ]
+  },
+  "aws.dynamodb": {
+    "id": "aws.dynamodb",
+    "displayName": "Amazon DynamoDB",
+    "category": "database",
+    "assetPath": "/assets/aws/database/aws-dynamodb.svg",
+    "aliases": [
+      "DynamoDB",
+      "Amazon DynamoDB",
+      "DDB",
+      "NoSQL Database"
+    ]
+  },
+  "aws.elasticache": {
+    "id": "aws.elasticache",
+    "displayName": "Amazon ElastiCache",
+    "category": "database",
+    "assetPath": "/assets/aws/database/aws-elasticache.svg",
+    "aliases": [
+      "ElastiCache",
+      "Amazon ElastiCache",
+      "Redis",
+      "Memcached"
+    ]
+  },
+  "aws.cognito": {
+    "id": "aws.cognito",
+    "displayName": "Amazon Cognito",
+    "category": "security",
+    "assetPath": "/assets/aws/security/aws-cognito.svg",
+    "aliases": [
+      "Cognito",
+      "Amazon Cognito",
+      "User Pool",
+      "Auth Pool"
+    ]
+  },
+  "aws.iam": {
+    "id": "aws.iam",
+    "displayName": "AWS IAM",
+    "category": "security",
+    "assetPath": "/assets/aws/security/aws-iam.svg",
+    "aliases": [
+      "IAM",
+      "AWS IAM",
+      "Identity and Access Management"
+    ]
+  },
+  "aws.secretsmanager": {
+    "id": "aws.secretsmanager",
+    "displayName": "AWS Secrets Manager",
+    "category": "security",
+    "assetPath": "/assets/aws/security/aws-secretsmanager.svg",
+    "aliases": [
+      "Secrets Manager",
+      "AWS Secrets Manager"
+    ]
+  },
+  "aws.apigateway": {
+    "id": "aws.apigateway",
+    "displayName": "Amazon API Gateway",
+    "category": "integration",
+    "assetPath": "/assets/aws/integration/aws-apigateway.svg",
+    "aliases": [
+      "API Gateway",
+      "Amazon API Gateway",
+      "REST API",
+      "HTTP API"
+    ]
+  },
+  "aws.sqs": {
+    "id": "aws.sqs",
+    "displayName": "Amazon SQS",
+    "category": "integration",
+    "assetPath": "/assets/aws/integration/aws-sqs.svg",
+    "aliases": [
+      "SQS",
+      "Amazon SQS",
+      "Simple Queue Service",
+      "Message Queue"
+    ]
+  },
+  "aws.sns": {
+    "id": "aws.sns",
+    "displayName": "Amazon SNS",
+    "category": "integration",
+    "assetPath": "/assets/aws/integration/aws-sns.svg",
+    "aliases": [
+      "SNS",
+      "Amazon SNS",
+      "Simple Notification Service",
+      "Topic"
+    ]
+  },
+  "aws.eventbridge": {
+    "id": "aws.eventbridge",
+    "displayName": "Amazon EventBridge",
+    "category": "integration",
+    "assetPath": "/assets/aws/integration/aws-eventbridge.svg",
+    "aliases": [
+      "EventBridge",
+      "Amazon EventBridge",
+      "CloudWatch Events",
+      "Event Bus"
+    ]
+  },
+  "aws.transcribe": {
+    "id": "aws.transcribe",
+    "displayName": "Amazon Transcribe",
+    "category": "aiml",
+    "assetPath": "/assets/aws/aiml/aws-transcribe.svg",
+    "aliases": [
+      "Transcribe",
+      "Amazon Transcribe",
+      "Speech to Text",
+      "STT"
+    ]
+  },
+  "aws.translate": {
+    "id": "aws.translate",
+    "displayName": "Amazon Translate",
+    "category": "aiml",
+    "assetPath": "/assets/aws/aiml/aws-translate.svg",
+    "aliases": [
+      "Translate",
+      "Amazon Translate"
+    ]
+  },
+  "aws.polly": {
+    "id": "aws.polly",
+    "displayName": "Amazon Polly",
+    "category": "aiml",
+    "assetPath": "/assets/aws/aiml/aws-polly.svg",
+    "aliases": [
+      "Polly",
+      "Amazon Polly",
+      "Text to Speech",
+      "TTS"
+    ]
+  },
+  "aws.comprehend": {
+    "id": "aws.comprehend",
+    "displayName": "Amazon Comprehend",
+    "category": "aiml",
+    "assetPath": "/assets/aws/aiml/aws-comprehend.svg",
+    "aliases": [
+      "Comprehend",
+      "Amazon Comprehend",
+      "Sentiment Analysis",
+      "NLP"
+    ]
+  },
+  "aws.cloudwatch": {
+    "id": "aws.cloudwatch",
+    "displayName": "Amazon CloudWatch",
+    "category": "operations",
+    "assetPath": "/assets/aws/operations/aws-cloudwatch.svg",
+    "aliases": [
+      "CloudWatch",
+      "Amazon CloudWatch",
+      "Logs",
+      "Metrics",
+      "Monitoring"
+    ]
+  },
+  "aws.ecr": {
+    "id": "aws.ecr",
+    "displayName": "Amazon ECR",
+    "category": "containers",
+    "assetPath": "/assets/aws/containers/aws-ecr.svg",
+    "aliases": [
+      "ECR",
+      "Amazon ECR",
+      "Elastic Container Registry",
+      "Container Registry"
+    ]
+  },
+  "aws.appsync": {
+    "id": "aws.appsync",
+    "displayName": "AWS AppSync",
+    "category": "integration",
+    "assetPath": "/assets/aws/integration/aws-appsync.svg",
+    "aliases": [
+      "AppSync",
+      "AWS AppSync",
+      "GraphQL"
+    ]
+  },
+  "aws.systems-manager": {
+    "id": "aws.systems-manager",
+    "displayName": "AWS Systems Manager",
+    "category": "operations",
+    "assetPath": "/assets/aws/operations/aws-systems-manager.svg",
+    "aliases": [
+      "Systems Manager",
+      "AWS Systems Manager",
+      "SSM"
+    ]
+  },
+  "aws.athena": {
+    "id": "aws.athena",
+    "displayName": "Amazon Athena",
+    "category": "database",
+    "assetPath": "/assets/aws/database/aws-athena.svg",
+    "aliases": [
+      "Athena",
+      "Amazon Athena",
+      "Serverless SQL"
+    ]
+  },
+  "aws.cur": {
+    "id": "aws.cur",
+    "displayName": "AWS Cost & Usage Report",
+    "category": "operations",
+    "assetPath": "/assets/aws/operations/aws-cur.svg",
+    "aliases": [
+      "Cost & Usage Report",
+      "AWS Cost & Usage Report",
+      "AWS Cost and Usage Report",
+      "CUR"
+    ]
+  },
+  "aws.neptune": {
+    "id": "aws.neptune",
+    "displayName": "Amazon Neptune",
+    "category": "database",
+    "assetPath": "/assets/aws/database/aws-neptune.svg",
+    "aliases": [
+      "Neptune",
+      "Amazon Neptune",
+      "Graph Database"
+    ]
+  },
+  "aws.opensearch": {
+    "id": "aws.opensearch",
+    "displayName": "Amazon OpenSearch Service",
+    "category": "database",
+    "assetPath": "/assets/aws/database/aws-opensearch.svg",
+    "aliases": [
+      "OpenSearch",
+      "Amazon OpenSearch Service",
+      "Amazon OpenSearch",
+      "Elasticsearch"
+    ]
+  },
+  "aws.sdk": {
+    "id": "aws.sdk",
+    "displayName": "AWS SDK",
+    "category": "operations",
+    "assetPath": "/assets/aws/operations/aws-sdk.svg",
+    "aliases": [
+      "AWS SDK",
+      "SDK",
+      "AWS Tools and SDKs",
+      "Tools and SDKs"
+    ]
+  },
+  "aws.config": {
+    "id": "aws.config",
+    "displayName": "AWS Config",
+    "category": "operations",
+    "assetPath": "/assets/aws/operations/aws-config.svg",
+    "aliases": [
+      "Config",
+      "AWS Config"
+    ]
+  },
+  "aws.codepipeline": {
+    "id": "aws.codepipeline",
+    "displayName": "AWS CodePipeline",
+    "category": "operations",
+    "assetPath": "/assets/aws/operations/aws-codepipeline.svg",
+    "aliases": [
+      "CodePipeline",
+      "AWS CodePipeline"
+    ]
+  },
+  "aws.codebuild": {
+    "id": "aws.codebuild",
+    "displayName": "AWS CodeBuild",
+    "category": "compute",
+    "assetPath": "/assets/aws/compute/aws-codebuild.svg",
+    "aliases": [
+      "CodeBuild",
+      "AWS CodeBuild"
+    ]
+  },
+  "external.user": {
+    "id": "external.user",
+    "displayName": "Users / Clients",
+    "category": "external",
+    "assetPath": "/assets/aws/external/external-user.svg",
+    "aliases": [
+      "User",
+      "Users",
+      "Client",
+      "Browser",
+      "Customer",
+      "Client Browser"
+    ]
+  },
+  "external.internet": {
+    "id": "external.internet",
+    "displayName": "Internet",
+    "category": "external",
+    "assetPath": "/assets/aws/external/external-internet.svg",
+    "aliases": [
+      "Internet",
+      "Public Internet",
+      "Web"
+    ]
+  },
+  "external.third-party": {
+    "id": "external.third-party",
+    "displayName": "Third-Party Service",
+    "category": "external",
+    "assetPath": "/assets/aws/external/external-third-party.svg",
+    "aliases": [
+      "Third-Party",
+      "Third Party",
+      "External API",
+      "Stripe",
+      "External Service"
+    ]
+  },
+  "generic.component": {
+    "id": "generic.component",
+    "displayName": "AWS Component",
+    "category": "generic",
+    "assetPath": "/assets/aws/generic/generic-component.svg",
+    "aliases": [
+      "Generic",
+      "Component",
+      "Service"
+    ]
+  }
+}

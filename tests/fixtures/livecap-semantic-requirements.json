@@ -1,0 +1,404 @@
+{
+  "entities": [
+    {
+      "id": "host",
+      "label": "Browser Host",
+      "kind": "node",
+      "provider": "external",
+      "role": "host",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "id": "viewer",
+      "label": "Browser Viewer",
+      "kind": "node",
+      "provider": "external",
+      "role": "viewer",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "id": "vercel",
+      "label": "Vercel Frontend Hosting",
+      "kind": "node",
+      "provider": "external",
+      "role": "frontend-hosting",
+      "evidence": "Frontend được host trên Vercel tại https://livecap-aurel.vercel.app."
+    },
+    {
+      "id": "dns",
+      "label": "Spaceship DNS",
+      "kind": "node",
+      "provider": "external",
+      "role": "dns",
+      "evidence": "DNS được quản lý tại Spaceship."
+    },
+    {
+      "id": "alb",
+      "label": "Application Load Balancer",
+      "kind": "node",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Internet-facing Application Load Balancer kết thúc TLS bằng certificate ACM."
+    },
+    {
+      "id": "ecs",
+      "label": "FastAPI Backend",
+      "kind": "node",
+      "provider": "aws",
+      "role": "backend",
+      "evidence": "Backend chạy trên ECS Fargate, image lưu ở ECR."
+    },
+    {
+      "id": "livekit",
+      "label": "LiveKit Cloud SFU",
+      "kind": "node",
+      "provider": "external",
+      "role": "media-relay",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "id": "transcribe",
+      "label": "Amazon Transcribe Streaming",
+      "kind": "node",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "id": "translate",
+      "label": "Amazon Translate",
+      "kind": "node",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "id": "buffer",
+      "label": "Sentence Buffer",
+      "kind": "node",
+      "provider": "unspecified",
+      "role": "other",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "id": "audio",
+      "label": "AudioWorklet",
+      "kind": "node",
+      "provider": "external",
+      "role": "other",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "id": "cognito",
+      "label": "Amazon Cognito User Pool",
+      "kind": "node",
+      "provider": "aws",
+      "role": "identity",
+      "evidence": "Amazon Cognito User Pool quản lý tài khoản, hỗ trợ Google OAuth."
+    },
+    {
+      "id": "s3",
+      "label": "Private Transcript S3",
+      "kind": "node",
+      "provider": "aws",
+      "role": "storage",
+      "evidence": "Private S3 lưu transcript TXT được export; tải bằng presigned URL."
+    },
+    {
+      "id": "deepseek",
+      "label": "DeepSeek Meeting Notes",
+      "kind": "node",
+      "provider": "external",
+      "role": "other",
+      "evidence": "AI meeting notes gọi DeepSeek từ backend; không chạy qua Bedrock hoặc LiveKit Agent."
+    },
+    {
+      "id": "browser",
+      "label": "Browser",
+      "kind": "container",
+      "provider": "external",
+      "role": "other",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "id": "vercel-boundary",
+      "label": "Vercel",
+      "kind": "container",
+      "provider": "external",
+      "role": "other",
+      "evidence": "Frontend được host trên Vercel tại https://livecap-aurel.vercel.app."
+    },
+    {
+      "id": "livekit-boundary",
+      "label": "LiveKit Cloud",
+      "kind": "container",
+      "provider": "external",
+      "role": "other",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "id": "aws",
+      "label": "AWS Aurel",
+      "kind": "container",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Backend hiện triển khai trên AWS account Aurel, region ap-southeast-1."
+    },
+    {
+      "id": "vpc",
+      "label": "Default VPC",
+      "kind": "container",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP; inbound port 8000 được giới hạn từ security group ALB."
+    },
+    {
+      "id": "public-subnet",
+      "label": "Public Subnet",
+      "kind": "container",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP; inbound port 8000 được giới hạn từ security group ALB."
+    }
+  ],
+  "flows": [
+    {
+      "from": "host",
+      "to": "vercel",
+      "label": "Load frontend",
+      "relationship": "request",
+      "evidence": "Frontend được host trên Vercel tại https://livecap-aurel.vercel.app."
+    },
+    {
+      "from": "viewer",
+      "to": "vercel",
+      "label": "Load frontend",
+      "relationship": "request",
+      "evidence": "Frontend được host trên Vercel tại https://livecap-aurel.vercel.app."
+    },
+    {
+      "from": "host",
+      "to": "alb",
+      "label": "HTTPS / WSS /ws/transcribe",
+      "relationship": "request",
+      "evidence": "Frontend gọi HTTPS API và mở WSS trực tiếp tới domain backend."
+    },
+    {
+      "from": "viewer",
+      "to": "alb",
+      "label": "Room WebSocket",
+      "relationship": "request",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "from": "alb",
+      "to": "ecs",
+      "label": "HTTP / WebSocket :8000",
+      "relationship": "request",
+      "evidence": "ALB chuyển HTTP/WebSocket tới FastAPI trên port 8000."
+    },
+    {
+      "from": "host",
+      "to": "audio",
+      "label": "Capture audio",
+      "relationship": "data",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "from": "ecs",
+      "to": "transcribe",
+      "label": "Streaming PCM",
+      "relationship": "data",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "from": "transcribe",
+      "to": "buffer",
+      "label": "Recognized sentences",
+      "relationship": "data",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "from": "buffer",
+      "to": "translate",
+      "label": "Translate sentences",
+      "relationship": "data",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "from": "translate",
+      "to": "ecs",
+      "label": "Bilingual subtitles",
+      "relationship": "data",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "from": "ecs",
+      "to": "alb",
+      "label": "Subtitle fan-out",
+      "relationship": "data",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "from": "alb",
+      "to": "host",
+      "label": "WebSocket subtitles",
+      "relationship": "data",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "from": "alb",
+      "to": "viewer",
+      "label": "Room WebSocket subtitles",
+      "relationship": "data",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "from": "host",
+      "to": "livekit",
+      "label": "Publish WebRTC media",
+      "relationship": "data",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "from": "livekit",
+      "to": "viewer",
+      "label": "Subscribe WebRTC media",
+      "relationship": "data",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "from": "ecs",
+      "to": "livekit",
+      "label": "Room / token control",
+      "relationship": "request",
+      "evidence": "FastAPI gọi LiveKit Server API để tạo/xóa media room và cấp participant token có thời hạn, giới hạn theo phòng và vai trò."
+    },
+    {
+      "from": "host",
+      "to": "cognito",
+      "label": "Login / Google OAuth",
+      "relationship": "auth",
+      "evidence": "Amazon Cognito User Pool quản lý tài khoản, hỗ trợ Google OAuth."
+    },
+    {
+      "from": "ecs",
+      "to": "cognito",
+      "label": "Validate Cognito token",
+      "relationship": "auth",
+      "evidence": "Backend xác thực Cognito access token."
+    },
+    {
+      "from": "ecs",
+      "to": "s3",
+      "label": "Store exported TXT",
+      "relationship": "data",
+      "evidence": "Private S3 lưu transcript TXT được export; tải bằng presigned URL."
+    },
+    {
+      "from": "ecs",
+      "to": "host",
+      "label": "Return presigned URL",
+      "relationship": "data",
+      "evidence": "Private S3 lưu transcript TXT được export; tải bằng presigned URL."
+    },
+    {
+      "from": "host",
+      "to": "s3",
+      "label": "Download transcript via presigned URL",
+      "relationship": "request",
+      "evidence": "Private S3 lưu transcript TXT được export; tải bằng presigned URL."
+    },
+    {
+      "from": "ecs",
+      "to": "deepseek",
+      "label": "Create meeting notes",
+      "relationship": "request",
+      "evidence": "AI meeting notes gọi DeepSeek từ backend; không chạy qua Bedrock hoặc LiveKit Agent."
+    }
+  ],
+  "placements": [
+    {
+      "entity": "host",
+      "parent": "browser",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "entity": "viewer",
+      "parent": "browser",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "entity": "audio",
+      "parent": "browser",
+      "evidence": "Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket."
+    },
+    {
+      "entity": "vercel",
+      "parent": "vercel-boundary",
+      "evidence": "Frontend được host trên Vercel tại https://livecap-aurel.vercel.app."
+    },
+    {
+      "entity": "livekit",
+      "parent": "livekit-boundary",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "entity": "vpc",
+      "parent": "aws",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP; inbound port 8000 được giới hạn từ security group ALB."
+    },
+    {
+      "entity": "public-subnet",
+      "parent": "vpc",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP; inbound port 8000 được giới hạn từ security group ALB."
+    },
+    {
+      "entity": "ecs",
+      "parent": "public-subnet",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP; inbound port 8000 được giới hạn từ security group ALB."
+    }
+  ],
+  "exclusions": [
+    {
+      "label": "CloudFront",
+      "assetId": "aws.cloudfront",
+      "evidence": "Không đặt CloudFront hoặc S3 frontend vào đường truy cập hiện tại."
+    },
+    {
+      "label": "Frontend S3",
+      "evidence": "Không đặt CloudFront hoặc S3 frontend vào đường truy cập hiện tại."
+    },
+    {
+      "label": "NAT Gateway",
+      "assetId": "aws.vpc.nat-gateway",
+      "evidence": "Không có NAT Gateway do stack Aurel này tạo."
+    }
+  ],
+  "notes": [
+    {
+      "text": "One task; no active-active HA.",
+      "evidence": "Một task không tạo thành kiến trúc active-active HA."
+    },
+    {
+      "text": "Session timeout: 300 seconds.",
+      "evidence": "SESSION_TIMEOUT: 300 giây."
+    },
+    {
+      "text": "Concurrent sessions: 2.",
+      "evidence": "MAX_CONCURRENT_SESSIONS: 2."
+    },
+    {
+      "text": "Sessions per IP: 1.",
+      "evidence": "MAX_SESSIONS_PER_IP: 1."
+    },
+    {
+      "text": "Retention: one day.",
+      "evidence": "Retention cấu hình cho room/history: 1 ngày."
+    },
+    {
+      "text": "Raw audio is not recorded.",
+      "evidence": "Raw microphone/tab audio không được ứng dụng lưu làm bản ghi."
+    }
+  ]
+}

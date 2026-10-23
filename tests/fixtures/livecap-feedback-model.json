@@ -1,0 +1,381 @@
+{
+  "version": "1.0",
+  "scope": {
+    "type": "overall-architecture",
+    "title": "LiveCap — Kiến trúc triển khai hiện tại (AWS Aurel, ap-southeast-1)"
+  },
+  "nodes": [
+    {
+      "id": "host",
+      "label": "Host browser (authenticated, room owner)",
+      "kind": "external",
+      "assetId": "external.user",
+      "containerId": "browser"
+    },
+    {
+      "id": "viewer",
+      "label": "Viewer browser (joins by link/code, subscribe only)",
+      "kind": "external",
+      "assetId": "external.user",
+      "containerId": "browser"
+    },
+    {
+      "id": "vercel",
+      "label": "Vercel static frontend hosting (livecap-aurel.vercel.app)",
+      "kind": "external",
+      "assetId": "generic.component"
+    },
+    {
+      "id": "spaceship_dns",
+      "label": "Spaceship DNS (livecap.logantai.com, api-livecap.logantai.com)",
+      "kind": "external",
+      "assetId": "generic.component"
+    },
+    {
+      "id": "alb",
+      "label": "Internet-facing Application Load Balancer (TLS, ACM cert)",
+      "kind": "aws-resource",
+      "assetId": "aws.elb.alb",
+      "containerId": "public_subnet"
+    },
+    {
+      "id": "acm",
+      "label": "AWS Certificate Manager certificate",
+      "kind": "aws-service",
+      "assetId": "generic.component",
+      "containerId": "aws"
+    },
+    {
+      "id": "fastapi",
+      "label": "ECS Fargate task / FastAPI",
+      "kind": "aws-service",
+      "assetId": "aws.ecs.fargate",
+      "containerId": "public_subnet"
+    },
+    {
+      "id": "ecr",
+      "label": "Amazon ECR (backend image)",
+      "kind": "aws-service",
+      "assetId": "aws.ecr",
+      "containerId": "aws"
+    },
+    {
+      "id": "cognito",
+      "label": "Amazon Cognito User Pool (Google OAuth, admin group)",
+      "kind": "aws-service",
+      "assetId": "aws.cognito",
+      "containerId": "aws"
+    },
+    {
+      "id": "transcribe",
+      "label": "Amazon Transcribe Streaming",
+      "kind": "aws-service",
+      "assetId": "aws.transcribe",
+      "containerId": "aws"
+    },
+    {
+      "id": "translate",
+      "label": "Amazon Translate",
+      "kind": "aws-service",
+      "assetId": "aws.translate",
+      "containerId": "aws"
+    },
+    {
+      "id": "dynamodb",
+      "label": "Amazon DynamoDB (transcript metadata, quota, room data)",
+      "kind": "aws-service",
+      "assetId": "aws.dynamodb",
+      "containerId": "aws"
+    },
+    {
+      "id": "s3",
+      "label": "Private S3 (exported transcript TXT)",
+      "kind": "aws-service",
+      "assetId": "aws.s3",
+      "containerId": "aws"
+    },
+    {
+      "id": "secrets",
+      "label": "AWS Secrets Manager (DeepSeek, LiveKit credentials)",
+      "kind": "aws-service",
+      "assetId": "aws.secretsmanager",
+      "containerId": "aws"
+    },
+    {
+      "id": "cloudwatch",
+      "label": "Amazon CloudWatch (application/container logs)",
+      "kind": "aws-service",
+      "assetId": "aws.cloudwatch",
+      "containerId": "aws"
+    },
+    {
+      "id": "terraform",
+      "label": "Terraform (manages AWS Aurel infra)",
+      "kind": "external",
+      "assetId": "generic.component"
+    },
+    {
+      "id": "livekit_sfu",
+      "label": "LiveKit Cloud SFU media relay",
+      "kind": "external",
+      "assetId": "generic.component",
+      "containerId": "livekit"
+    },
+    {
+      "id": "deepseek",
+      "label": "DeepSeek API (AI meeting notes)",
+      "kind": "external",
+      "assetId": "external.third-party"
+    }
+  ],
+  "containers": [
+    {
+      "id": "browser",
+      "label": "Browser (React/TypeScript/Vite frontend)",
+      "type": "generic-group"
+    },
+    {
+      "id": "aws",
+      "label": "AWS account Aurel, region ap-southeast-1",
+      "type": "cloud",
+      "origin": "explicit"
+    },
+    {
+      "id": "default_vpc",
+      "label": "Default VPC",
+      "type": "vpc",
+      "parentId": "aws"
+    },
+    {
+      "id": "public_subnet",
+      "label": "Public subnets (logical boundary, count unspecified)",
+      "type": "subnet-public",
+      "parentId": "default_vpc"
+    },
+    {
+      "id": "livekit",
+      "label": "LiveKit Cloud",
+      "type": "generic-group"
+    }
+  ],
+  "connections": [
+    {
+      "id": "flow-1-hop-1",
+      "source": "host",
+      "target": "vercel",
+      "label": "HTTPS load frontend",
+      "relationship": "request"
+    },
+    {
+      "id": "flow-2-hop-1",
+      "source": "viewer",
+      "target": "vercel",
+      "label": "HTTPS load frontend",
+      "relationship": "request"
+    },
+    {
+      "id": "flow-3-hop-1",
+      "source": "host",
+      "target": "cognito",
+      "label": "Login / Google OAuth, obtain access token",
+      "relationship": "auth"
+    },
+    {
+      "id": "flow-4-hop-1",
+      "source": "host",
+      "target": "alb",
+      "label": "HTTPS API + WSS /ws/transcribe to api-livecap.logantai.com",
+      "relationship": "request",
+      "description": "stage=runtime"
+    },
+    {
+      "id": "flow-5-hop-1",
+      "source": "viewer",
+      "target": "alb",
+      "label": "HTTPS API + WSS room subscribe",
+      "relationship": "request",
+      "description": "stage=runtime"
+    },
+    {
+      "id": "flow-6-hop-1",
+      "source": "alb",
+      "target": "fastapi",
+      "label": "HTTP/WebSocket to port 8000",
+      "relationship": "request",
+      "description": "stage=runtime"
+    },
+    {
+      "id": "flow-7-hop-1",
+      "source": "fastapi",
+      "target": "cognito",
+      "label": "Verify Cognito access token, check admin group",
+      "relationship": "auth"
+    },
+    {
+      "id": "flow-8-hop-1",
+      "source": "fastapi",
+      "target": "transcribe",
+      "label": "Streaming audio to Transcribe",
+      "relationship": "data"
+    },
+    {
+      "id": "flow-9-hop-1",
+      "source": "fastapi",
+      "target": "translate",
+      "label": "Translate buffered sentences",
+      "relationship": "data"
+    },
+    {
+      "id": "flow-10-hop-1",
+      "source": "fastapi",
+      "target": "alb",
+      "label": "Bilingual subtitles over WebSocket",
+      "relationship": "data",
+      "description": "stage=delivery"
+    },
+    {
+      "id": "flow-10-hop-2",
+      "source": "alb",
+      "target": "host",
+      "label": "Bilingual subtitles over WebSocket",
+      "relationship": "data",
+      "description": "stage=delivery"
+    },
+    {
+      "id": "flow-11-hop-1",
+      "source": "fastapi",
+      "target": "alb",
+      "label": "Subtitle fan-out to room over WebSocket",
+      "relationship": "data",
+      "description": "stage=delivery"
+    },
+    {
+      "id": "flow-11-hop-2",
+      "source": "alb",
+      "target": "viewer",
+      "label": "Subtitle fan-out to room over WebSocket",
+      "relationship": "data",
+      "description": "stage=delivery"
+    },
+    {
+      "id": "flow-12-hop-1",
+      "source": "fastapi",
+      "target": "livekit_sfu",
+      "label": "Create/delete media room",
+      "relationship": "request",
+      "description": "stage=control"
+    },
+    {
+      "id": "flow-13-hop-1",
+      "source": "host",
+      "target": "livekit_sfu",
+      "label": "WebRTC publish screen video + mixed audio",
+      "relationship": "data"
+    },
+    {
+      "id": "flow-14-hop-1",
+      "source": "livekit_sfu",
+      "target": "viewer",
+      "label": "WebRTC media subscribe",
+      "relationship": "data"
+    },
+    {
+      "id": "flow-15-hop-1",
+      "source": "fastapi",
+      "target": "dynamodb",
+      "label": "Store transcript metadata, quota, room data",
+      "relationship": "data"
+    },
+    {
+      "id": "flow-16-hop-1",
+      "source": "fastapi",
+      "target": "s3",
+      "label": "Write exported transcript TXT",
+      "relationship": "data"
+    },
+    {
+      "id": "flow-17-hop-1",
+      "source": "fastapi",
+      "target": "alb",
+      "label": "Presigned URL for transcript download",
+      "relationship": "data",
+      "description": "stage=delivery"
+    },
+    {
+      "id": "flow-17-hop-2",
+      "source": "alb",
+      "target": "host",
+      "label": "Presigned URL for transcript download",
+      "relationship": "data",
+      "description": "stage=delivery"
+    },
+    {
+      "id": "flow-18-hop-1",
+      "source": "host",
+      "target": "s3",
+      "label": "Browser download via presigned URL",
+      "relationship": "data"
+    },
+    {
+      "id": "flow-19-hop-1",
+      "source": "fastapi",
+      "target": "deepseek",
+      "label": "AI meeting notes request",
+      "relationship": "request"
+    },
+    {
+      "id": "flow-20-hop-1",
+      "source": "fastapi",
+      "target": "cloudwatch",
+      "label": "Application/container logs",
+      "relationship": "data"
+    },
+    {
+      "id": "flow-21-hop-1",
+      "source": "ecr",
+      "target": "fastapi",
+      "label": "Container image pull",
+      "relationship": "data",
+      "description": "stage=deployment"
+    },
+    {
+      "id": "flow-22-hop-1",
+      "source": "acm",
+      "target": "alb",
+      "label": "TLS certificate",
+      "relationship": "association"
+    },
+    {
+      "id": "flow-24-hop-1",
+      "source": "fastapi",
+      "target": "fastapi",
+      "label": "Sign LiveKit participant JWT locally",
+      "relationship": "association",
+      "description": "stage=control"
+    },
+    {
+      "id": "flow-25-hop-1",
+      "source": "fastapi",
+      "target": "alb",
+      "label": "Participant JWT response",
+      "relationship": "data",
+      "description": "stage=delivery"
+    },
+    {
+      "id": "flow-25-hop-2",
+      "source": "alb",
+      "target": "host",
+      "label": "Participant JWT response",
+      "relationship": "data",
+      "description": "stage=delivery"
+    },
+    {
+      "id": "flow-26-hop-1",
+      "source": "secrets",
+      "target": "fastapi",
+      "label": "Inject secrets at task startup",
+      "relationship": "data",
+      "description": "stage=startup"
+    }
+  ]
+}

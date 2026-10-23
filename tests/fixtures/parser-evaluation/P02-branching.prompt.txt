@@ -1,0 +1,7 @@
+Draw this AWS architecture:
+Users access CloudFront over HTTPS.
+CloudFront routes /assets/* to a private S3 bucket.
+CloudFront routes /api/* to an Application Load Balancer.
+The ALB forwards traffic to ECS Fargate.
+ECS runs inside a private subnet in a VPC.
+ECS stores application state in DynamoDB.

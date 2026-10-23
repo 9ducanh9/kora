@@ -1,0 +1,272 @@
+.kora-topbar {
+  width: 100%;
+  height: 44px;
+  background: var(--surface-bg);
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  user-select: none;
+  z-index: 50;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.topbar-left,
+.topbar-center,
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Brand */
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar-logo-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #ff9900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.topbar-brand-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--text-primary);
+}
+
+.topbar-title-box {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-diagram-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Buttons */
+.topbar-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.topbar-btn:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.topbar-btn:active:not(:disabled) {
+  background: var(--surface-active);
+}
+
+.topbar-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.topbar-btn.is-accent {
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.topbar-btn.is-accent:hover {
+  background: var(--surface-hover);
+}
+
+.topbar-btn.is-active {
+  background: var(--surface-hover);
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.topbar-btn.is-danger:hover {
+  color: #cf222e;
+}
+
+.export-menu-wrap {
+  position: relative;
+}
+
+.export-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  padding: 5px;
+  border: 1px solid var(--surface-border);
+  border-radius: 7px;
+  background: var(--surface-bg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.export-menu button {
+  width: 100%;
+  text-align: left;
+  padding: 7px 9px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  font: 500 12px var(--font-sans);
+}
+
+.export-menu button:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.export-menu button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.export-menu-status {
+  padding: 6px 9px;
+  color: var(--text-secondary);
+  font: 11px var(--font-sans);
+  overflow-wrap: anywhere;
+}
+
+.export-menu button:focus-visible,
+.topbar-btn:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.topbar-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.topbar-icon-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.topbar-separator {
+  width: 1px;
+  height: 16px;
+  background: var(--surface-border);
+  margin: 0 4px;
+}
+
+/* Minimal Zoom Bar */
+.topbar-zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--surface-hover);
+  border: 1px solid var(--surface-border);
+  border-radius: 4px;
+  padding: 1px 3px;
+}
+
+.topbar-zoom-label {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  border-radius: 3px;
+  min-width: 42px;
+  text-align: center;
+}
+
+.topbar-zoom-label:hover {
+  background: var(--surface-bg);
+  color: var(--text-primary);
+}
+
+/* Theme Switcher Segmented Control */
+.topbar-theme-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--surface-hover);
+  border: 1px solid var(--surface-border);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.theme-segment-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  border-radius: 3px;
+  color: var(--text-muted);
+  transition: all 0.12s ease;
+}
+
+.theme-segment-btn:hover {
+  color: var(--text-primary);
+}
+
+.theme-segment-btn.is-selected {
+  background: var(--surface-bg);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Keep controls inside a narrow editor pane so focusing Export/Fit View cannot
+   scroll the whole workspace horizontally and hide the diagram. */
+@media (max-width: 1200px) {
+  .kora-topbar {
+    height: auto;
+    min-height: 44px;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 12px;
+  }
+
+  .topbar-left {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .topbar-title-box {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .topbar-center,
+  .topbar-right {
+    flex-wrap: wrap;
+    max-width: 100%;
+    gap: 4px;
+  }
+
+  .topbar-right { margin-left: auto; }
+}

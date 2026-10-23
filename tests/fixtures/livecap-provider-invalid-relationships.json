@@ -1,0 +1,243 @@
+{
+  "version": "1.0",
+  "scope": {
+    "type": "overall-architecture",
+    "title": "LiveCap - Real-time Bilingual Subtitles Architecture (Aurel AWS Account)"
+  },
+  "nodes": [
+    {
+      "id": "user",
+      "label": "Users (Host / Viewer)",
+      "kind": "external",
+      "assetId": "external.user"
+    },
+    {
+      "id": "dns-spaceship",
+      "label": "DNS (Spaceship)",
+      "kind": "external",
+      "assetId": "external.third-party"
+    },
+    {
+      "id": "vercel",
+      "label": "Vercel Frontend (React/TS/Vite)",
+      "kind": "external",
+      "assetId": "external.third-party"
+    },
+    {
+      "id": "alb",
+      "label": "Internet-facing ALB (ACM TLS)",
+      "kind": "aws-resource",
+      "assetId": "aws.elb.alb"
+    },
+    {
+      "id": "ecs",
+      "label": "ECS Fargate FastAPI (0.5 vCPU, 1 GiB)",
+      "kind": "aws-service",
+      "assetId": "aws.ecs.fargate",
+      "containerId": "subnet-pub-1"
+    },
+    {
+      "id": "ecr",
+      "label": "Amazon ECR",
+      "kind": "aws-service",
+      "assetId": "aws.ecr"
+    },
+    {
+      "id": "cognito",
+      "label": "Amazon Cognito User Pool (Google OAuth)",
+      "kind": "aws-service",
+      "assetId": "aws.cognito"
+    },
+    {
+      "id": "transcribe",
+      "label": "Amazon Transcribe Streaming",
+      "kind": "aws-service",
+      "assetId": "aws.transcribe"
+    },
+    {
+      "id": "translate",
+      "label": "Amazon Translate",
+      "kind": "aws-service",
+      "assetId": "aws.translate"
+    },
+    {
+      "id": "dynamodb",
+      "label": "Amazon DynamoDB (metadata, quota, rooms)",
+      "kind": "aws-service",
+      "assetId": "aws.dynamodb"
+    },
+    {
+      "id": "s3",
+      "label": "Private S3 (transcript TXT export)",
+      "kind": "aws-service",
+      "assetId": "aws.s3"
+    },
+    {
+      "id": "secretsmanager",
+      "label": "AWS Secrets Manager (DeepSeek, LiveKit creds)",
+      "kind": "aws-service",
+      "assetId": "aws.secretsmanager"
+    },
+    {
+      "id": "cloudwatch",
+      "label": "Amazon CloudWatch Logs",
+      "kind": "aws-service",
+      "assetId": "aws.cloudwatch"
+    },
+    {
+      "id": "deepseek",
+      "label": "DeepSeek API (AI meeting notes)",
+      "kind": "external",
+      "assetId": "external.third-party"
+    },
+    {
+      "id": "livekit",
+      "label": "LiveKit Cloud SFU",
+      "kind": "external",
+      "assetId": "external.third-party"
+    }
+  ],
+  "connections": [
+    {
+      "id": "conn-1",
+      "source": "user",
+      "target": "dns-spaceship",
+      "relationship": "request",
+      "label": "DNS lookup"
+    },
+    {
+      "id": "conn-2",
+      "source": "dns-spaceship",
+      "target": "vercel",
+      "relationship": "request",
+      "label": "livecap.logantai.com redirect"
+    },
+    {
+      "id": "conn-3",
+      "source": "user",
+      "target": "vercel",
+      "relationship": "request",
+      "label": "HTTPS (livecap-aurel.vercel.app)"
+    },
+    {
+      "id": "conn-4",
+      "source": "vercel",
+      "target": "alb",
+      "relationship": "request",
+      "label": "HTTPS / WSS api-livecap.logantai.com"
+    },
+    {
+      "id": "conn-5",
+      "source": "alb",
+      "target": "ecs",
+      "relationship": "request",
+      "label": "HTTP/WebSocket :8000"
+    },
+    {
+      "id": "conn-6",
+      "source": "ecs",
+      "target": "cognito",
+      "relationship": "auth",
+      "label": "Validate access token / admin group"
+    },
+    {
+      "id": "conn-7",
+      "source": "ecs",
+      "target": "transcribe",
+      "relationship": "data",
+      "label": "Streaming audio (PCM 16kHz)"
+    },
+    {
+      "id": "conn-8",
+      "source": "ecs",
+      "target": "translate",
+      "relationship": "data",
+      "label": "Translate transcript"
+    },
+    {
+      "id": "conn-9",
+      "source": "ecs",
+      "target": "dynamodb",
+      "relationship": "data",
+      "label": "Read/Write metadata, quota, rooms"
+    },
+    {
+      "id": "conn-10",
+      "source": "ecs",
+      "target": "s3",
+      "relationship": "data",
+      "label": "Store transcript TXT / presigned URL"
+    },
+    {
+      "id": "conn-11",
+      "source": "ecs",
+      "target": "secretsmanager",
+      "relationship": "data",
+      "label": "Retrieve DeepSeek & LiveKit creds"
+    },
+    {
+      "id": "conn-12",
+      "source": "ecs",
+      "target": "cloudwatch",
+      "relationship": "data",
+      "label": "Application/container logs"
+    },
+    {
+      "id": "conn-13",
+      "source": "ecs",
+      "target": "deepseek",
+      "relationship": "request",
+      "label": "AI meeting notes"
+    },
+    {
+      "id": "conn-14",
+      "source": "ecs",
+      "target": "livekit",
+      "relationship": "request",
+      "label": "Server API: create/delete room, issue tokens"
+    },
+    {
+      "id": "conn-15",
+      "source": "user",
+      "target": "livekit",
+      "relationship": "media",
+      "label": "WebRTC (host publish / viewer subscribe)"
+    },
+    {
+      "id": "conn-16",
+      "source": "ecr",
+      "target": "ecs",
+      "relationship": "deploy",
+      "label": "Container image pull"
+    }
+  ],
+  "containers": [
+    {
+      "id": "aws-cloud",
+      "label": "AWS (Aurel account, ap-southeast-1)",
+      "type": "cloud"
+    },
+    {
+      "id": "vpc-default",
+      "label": "Default VPC",
+      "type": "vpc",
+      "parentId": "aws-cloud"
+    },
+    {
+      "id": "subnet-pub-1",
+      "label": "Public Subnet",
+      "type": "subnet-public",
+      "parentId": "vpc-default"
+    },
+    {
+      "id": "group-livekit-cloud",
+      "label": "LiveKit Cloud",
+      "type": "generic-group"
+    },
+    {
+      "id": "group-vercel",
+      "label": "Vercel",
+      "type": "generic-group"
+    }
+  ]
+}

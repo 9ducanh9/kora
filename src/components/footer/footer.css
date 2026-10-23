@@ -1,0 +1,113 @@
+.kora-footer {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  right: 16px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.footer-pill {
+  pointer-events: all;
+  background: var(--surface-bg);
+  border: 1px solid var(--surface-border);
+  border-radius: 4px;
+  padding: 3px 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.footer-metric {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.footer-issues {
+  position: relative;
+  color: var(--accent-blue);
+  max-width: 340px;
+}
+
+.footer-issues summary {
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.footer-issue-details {
+  position: absolute;
+  left: 0;
+  bottom: 24px;
+  width: min(420px, calc(100vw - 48px));
+  max-height: 320px;
+  overflow: auto;
+  padding: 10px 12px;
+  color: var(--text-primary);
+  background: var(--surface-bg);
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.footer-issue-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.footer-issue-heading button {
+  border: 0;
+  background: transparent;
+  color: var(--accent-blue);
+  cursor: pointer;
+  font: inherit;
+}
+
+.footer-issue-details ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-secondary);
+}
+
+.footer-issue-details li + li {
+  margin-top: 5px;
+}
+
+.footer-issue-more {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-secondary);
+}
+
+.metric-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.footer-toast {
+  pointer-events: all;
+  background: var(--surface-bg);
+  border: 1px solid var(--accent-blue);
+  color: var(--accent-blue);
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}

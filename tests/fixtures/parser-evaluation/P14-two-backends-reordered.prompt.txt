@@ -1,0 +1,10 @@
+Draw this AWS architecture:
+Both backends store application state in the same DynamoDB table.
+The ALB forwards to two separate ECS Fargate services: Backend A and Backend B.
+Backend A belongs to Private Subnet A; Backend B belongs to Private Subnet B.
+VPC Main contains Private Subnet A and Private Subnet B.
+CloudFront, S3, ALB and DynamoDB are in AWS Cloud, outside VPC Main.
+CloudFront routes /assets/* to a private S3 bucket and /api/* to an ALB.
+Users access CloudFront over HTTPS.
+Users are outside AWS Cloud. Do not add Regions or Availability Zones.
+VPC Main is directly inside AWS Cloud.

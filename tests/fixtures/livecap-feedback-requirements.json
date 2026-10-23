@@ -1,0 +1,628 @@
+{
+  "entities": [
+    {
+      "id": "browser",
+      "label": "Browser (React/TypeScript/Vite frontend)",
+      "kind": "container",
+      "provider": "external",
+      "role": "browser",
+      "evidence": "Frontend dùng React, TypeScript, Vite; backend dùng Python và FastAPI."
+    },
+    {
+      "id": "host",
+      "label": "Host browser (authenticated, room owner)",
+      "kind": "node",
+      "provider": "external",
+      "role": "host",
+      "evidence": "Host cần xác thực và quyền sở hữu phòng."
+    },
+    {
+      "id": "viewer",
+      "label": "Viewer browser (joins by link/code, subscribe only)",
+      "kind": "node",
+      "provider": "external",
+      "role": "viewer",
+      "evidence": "Viewer dùng link/mã phòng để xem; quyền media của viewer chỉ cho subscribe."
+    },
+    {
+      "id": "vercel",
+      "label": "Vercel static frontend hosting (livecap-aurel.vercel.app)",
+      "kind": "node",
+      "provider": "external",
+      "role": "frontend-hosting",
+      "evidence": "Frontend được host trên Vercel tại https://livecap-aurel.vercel.app."
+    },
+    {
+      "id": "spaceship_dns",
+      "label": "Spaceship DNS (livecap.logantai.com, api-livecap.logantai.com)",
+      "kind": "node",
+      "provider": "external",
+      "role": "dns",
+      "evidence": "DNS được quản lý tại Spaceship."
+    },
+    {
+      "id": "aws",
+      "label": "AWS account Aurel, region ap-southeast-1",
+      "kind": "container",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Backend hiện triển khai trên AWS account Aurel, region ap-southeast-1."
+    },
+    {
+      "id": "default_vpc",
+      "label": "Default VPC",
+      "kind": "container",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP"
+    },
+    {
+      "id": "public_subnet",
+      "label": "Public subnets (logical boundary, count unspecified)",
+      "kind": "container",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP"
+    },
+    {
+      "id": "alb",
+      "label": "Internet-facing Application Load Balancer (TLS, ACM cert)",
+      "kind": "node",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Internet-facing Application Load Balancer kết thúc TLS bằng certificate ACM."
+    },
+    {
+      "id": "acm",
+      "label": "AWS Certificate Manager certificate",
+      "kind": "node",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Internet-facing Application Load Balancer kết thúc TLS bằng certificate ACM."
+    },
+    {
+      "id": "fastapi",
+      "label": "ECS Fargate task / FastAPI",
+      "kind": "node",
+      "provider": "aws",
+      "role": "backend",
+      "evidence": "ALB chuyển HTTP/WebSocket tới FastAPI trên port 8000."
+    },
+    {
+      "id": "ecr",
+      "label": "Amazon ECR (backend image)",
+      "kind": "node",
+      "provider": "aws",
+      "role": "storage",
+      "evidence": "Backend chạy trên ECS Fargate, image lưu ở ECR."
+    },
+    {
+      "id": "cognito",
+      "label": "Amazon Cognito User Pool (Google OAuth, admin group)",
+      "kind": "node",
+      "provider": "aws",
+      "role": "identity",
+      "evidence": "Amazon Cognito User Pool quản lý tài khoản, hỗ trợ Google OAuth."
+    },
+    {
+      "id": "transcribe",
+      "label": "Amazon Transcribe Streaming",
+      "kind": "node",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming"
+    },
+    {
+      "id": "translate",
+      "label": "Amazon Translate",
+      "kind": "node",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser"
+    },
+    {
+      "id": "dynamodb",
+      "label": "Amazon DynamoDB (transcript metadata, quota, room data)",
+      "kind": "node",
+      "provider": "aws",
+      "role": "storage",
+      "evidence": "DynamoDB lưu metadata/history transcript, usage quota và dữ liệu phòng/phụ đề đã finalized."
+    },
+    {
+      "id": "s3",
+      "label": "Private S3 (exported transcript TXT)",
+      "kind": "node",
+      "provider": "aws",
+      "role": "storage",
+      "evidence": "Private S3 lưu transcript TXT được export; tải bằng presigned URL."
+    },
+    {
+      "id": "secrets",
+      "label": "AWS Secrets Manager (DeepSeek, LiveKit credentials)",
+      "kind": "node",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "Secrets Manager giữ credentials cho DeepSeek và LiveKit."
+    },
+    {
+      "id": "cloudwatch",
+      "label": "Amazon CloudWatch (application/container logs)",
+      "kind": "node",
+      "provider": "aws",
+      "role": "other",
+      "evidence": "CloudWatch thu application/container logs."
+    },
+    {
+      "id": "terraform",
+      "label": "Terraform (manages AWS Aurel infra)",
+      "kind": "node",
+      "provider": "external",
+      "role": "other",
+      "evidence": "Terraform quản lý hạ tầng AWS Aurel; frontend Vercel và LiveKit Cloud là các phần triển khai riêng."
+    },
+    {
+      "id": "livekit",
+      "label": "LiveKit Cloud",
+      "kind": "container",
+      "provider": "external",
+      "role": "media-relay",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "id": "livekit_sfu",
+      "label": "LiveKit Cloud SFU media relay",
+      "kind": "node",
+      "provider": "external",
+      "role": "media-relay",
+      "evidence": "LiveKit Cloud hiện phục vụ media; không có LiveKit AI Agent trong luồng này."
+    },
+    {
+      "id": "deepseek",
+      "label": "DeepSeek API (AI meeting notes)",
+      "kind": "node",
+      "provider": "external",
+      "role": "other",
+      "evidence": "AI meeting notes gọi DeepSeek từ backend; không chạy qua Bedrock hoặc LiveKit Agent."
+    }
+  ],
+  "flows": [
+    {
+      "from": "host",
+      "to": "vercel",
+      "label": "HTTPS load frontend",
+      "relationship": "request",
+      "evidence": "Frontend được host trên Vercel tại https://livecap-aurel.vercel.app."
+    },
+    {
+      "from": "viewer",
+      "to": "vercel",
+      "label": "HTTPS load frontend",
+      "relationship": "request",
+      "evidence": "Frontend được host trên Vercel tại https://livecap-aurel.vercel.app."
+    },
+    {
+      "from": "host",
+      "to": "cognito",
+      "label": "Login / Google OAuth, obtain access token",
+      "relationship": "auth",
+      "evidence": "Amazon Cognito User Pool quản lý tài khoản, hỗ trợ Google OAuth."
+    },
+    {
+      "from": "host",
+      "to": "alb",
+      "label": "HTTPS API + WSS /ws/transcribe to api-livecap.logantai.com",
+      "relationship": "request",
+      "evidence": "Frontend gọi HTTPS API và mở WSS trực tiếp tới domain backend.",
+      "stage": "runtime"
+    },
+    {
+      "from": "viewer",
+      "to": "alb",
+      "label": "HTTPS API + WSS room subscribe",
+      "relationship": "request",
+      "evidence": "Frontend gọi HTTPS API và mở WSS trực tiếp tới domain backend.",
+      "stage": "runtime"
+    },
+    {
+      "from": "alb",
+      "to": "fastapi",
+      "label": "HTTP/WebSocket to port 8000",
+      "relationship": "request",
+      "evidence": "ALB chuyển HTTP/WebSocket tới FastAPI trên port 8000.",
+      "stage": "runtime"
+    },
+    {
+      "from": "fastapi",
+      "to": "cognito",
+      "label": "Verify Cognito access token, check admin group",
+      "relationship": "auth",
+      "evidence": "Backend xác thực Cognito access token."
+    },
+    {
+      "from": "fastapi",
+      "to": "transcribe",
+      "label": "Streaming audio to Transcribe",
+      "relationship": "data",
+      "evidence": "WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming"
+    },
+    {
+      "from": "fastapi",
+      "to": "translate",
+      "label": "Translate buffered sentences",
+      "relationship": "data",
+      "evidence": "bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser"
+    },
+    {
+      "from": "fastapi",
+      "to": "host",
+      "label": "Bilingual subtitles over WebSocket",
+      "relationship": "data",
+      "evidence": "Đường trả phụ đề phải biểu diễn FastAPI → ALB → Host browser và FastAPI → ALB → Viewer browser.",
+      "via": [
+        "alb"
+      ],
+      "stage": "delivery"
+    },
+    {
+      "from": "fastapi",
+      "to": "viewer",
+      "label": "Subtitle fan-out to room over WebSocket",
+      "relationship": "data",
+      "evidence": "Đường trả phụ đề phải biểu diễn FastAPI → ALB → Host browser và FastAPI → ALB → Viewer browser.",
+      "via": [
+        "alb"
+      ],
+      "stage": "delivery"
+    },
+    {
+      "from": "fastapi",
+      "to": "livekit_sfu",
+      "label": "Create/delete media room",
+      "relationship": "request",
+      "evidence": "FastAPI gọi LiveKit Server API chỉ để tạo/xóa media room.",
+      "stage": "control"
+    },
+    {
+      "from": "host",
+      "to": "livekit_sfu",
+      "label": "WebRTC publish screen video + mixed audio",
+      "relationship": "data",
+      "evidence": "Host publish screen video và audio microphone/tab đã trộn."
+    },
+    {
+      "from": "livekit_sfu",
+      "to": "viewer",
+      "label": "WebRTC media subscribe",
+      "relationship": "data",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "from": "fastapi",
+      "to": "dynamodb",
+      "label": "Store transcript metadata, quota, room data",
+      "relationship": "data",
+      "evidence": "DynamoDB lưu metadata/history transcript, usage quota và dữ liệu phòng/phụ đề đã finalized."
+    },
+    {
+      "from": "fastapi",
+      "to": "s3",
+      "label": "Write exported transcript TXT",
+      "relationship": "data",
+      "evidence": "Private S3 lưu transcript TXT được export; tải bằng presigned URL."
+    },
+    {
+      "from": "fastapi",
+      "to": "host",
+      "label": "Presigned URL for transcript download",
+      "relationship": "data",
+      "evidence": "Các response API trả participant JWT và presigned URL cũng đi FastAPI → ALB → browser.",
+      "via": [
+        "alb"
+      ],
+      "stage": "delivery"
+    },
+    {
+      "from": "host",
+      "to": "s3",
+      "label": "Browser download via presigned URL",
+      "relationship": "data",
+      "evidence": "Private S3 lưu transcript TXT được export; tải bằng presigned URL."
+    },
+    {
+      "from": "fastapi",
+      "to": "deepseek",
+      "label": "AI meeting notes request",
+      "relationship": "request",
+      "evidence": "AI meeting notes gọi DeepSeek từ backend; không chạy qua Bedrock hoặc LiveKit Agent."
+    },
+    {
+      "from": "fastapi",
+      "to": "cloudwatch",
+      "label": "Application/container logs",
+      "relationship": "data",
+      "evidence": "CloudWatch thu application/container logs."
+    },
+    {
+      "from": "ecr",
+      "to": "fastapi",
+      "label": "Container image pull",
+      "relationship": "data",
+      "evidence": "Backend chạy trên ECS Fargate, image lưu ở ECR.",
+      "stage": "deployment"
+    },
+    {
+      "from": "acm",
+      "to": "alb",
+      "label": "TLS certificate",
+      "relationship": "association",
+      "evidence": "Internet-facing Application Load Balancer kết thúc TLS bằng certificate ACM."
+    },
+    {
+      "from": "fastapi",
+      "to": "fastapi",
+      "label": "Sign LiveKit participant JWT locally",
+      "relationship": "association",
+      "stage": "control",
+      "evidence": "Backend tự ký participant JWT cục bộ bằng LiveKit SDK; token có thời hạn, giới hạn theo phòng và vai trò, rồi trả về browser qua ALB."
+    },
+    {
+      "from": "fastapi",
+      "to": "host",
+      "via": [
+        "alb"
+      ],
+      "label": "Participant JWT response",
+      "relationship": "data",
+      "stage": "delivery",
+      "evidence": "Các response API trả participant JWT và presigned URL cũng đi FastAPI → ALB → browser."
+    },
+    {
+      "from": "secrets",
+      "to": "fastapi",
+      "label": "Inject secrets at task startup",
+      "relationship": "data",
+      "stage": "startup",
+      "evidence": "Trong triển khai LiveCap này, ECS inject secret từ Secrets Manager vào ECS task khi task khởi động."
+    }
+  ],
+  "placements": [
+    {
+      "entity": "host",
+      "parent": "browser",
+      "evidence": "Browser capture microphone hoặc audio từ tab"
+    },
+    {
+      "entity": "viewer",
+      "parent": "browser",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "entity": "default_vpc",
+      "parent": "aws",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP"
+    },
+    {
+      "entity": "public_subnet",
+      "parent": "default_vpc",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP"
+    },
+    {
+      "entity": "alb",
+      "parent": "aws",
+      "evidence": "Internet-facing Application Load Balancer kết thúc TLS bằng certificate ACM."
+    },
+    {
+      "entity": "fastapi",
+      "parent": "public_subnet",
+      "evidence": "Task đặt trong public subnet của default VPC, có public IP"
+    },
+    {
+      "entity": "ecr",
+      "parent": "aws",
+      "evidence": "Backend chạy trên ECS Fargate, image lưu ở ECR."
+    },
+    {
+      "entity": "cognito",
+      "parent": "aws",
+      "evidence": "Amazon Cognito User Pool quản lý tài khoản, hỗ trợ Google OAuth."
+    },
+    {
+      "entity": "transcribe",
+      "parent": "aws",
+      "evidence": "FastAPI → Amazon Transcribe Streaming"
+    },
+    {
+      "entity": "translate",
+      "parent": "aws",
+      "evidence": "bộ đệm/gộp câu → Amazon Translate"
+    },
+    {
+      "entity": "dynamodb",
+      "parent": "aws",
+      "evidence": "DynamoDB lưu metadata/history transcript, usage quota và dữ liệu phòng/phụ đề đã finalized."
+    },
+    {
+      "entity": "s3",
+      "parent": "aws",
+      "evidence": "Private S3 lưu transcript TXT được export; tải bằng presigned URL."
+    },
+    {
+      "entity": "secrets",
+      "parent": "aws",
+      "evidence": "Secrets Manager giữ credentials cho DeepSeek và LiveKit."
+    },
+    {
+      "entity": "cloudwatch",
+      "parent": "aws",
+      "evidence": "CloudWatch thu application/container logs."
+    },
+    {
+      "entity": "livekit_sfu",
+      "parent": "livekit",
+      "evidence": "Browser host → WebRTC → LiveKit Cloud SFU → browser viewer."
+    },
+    {
+      "entity": "alb",
+      "parent": "public_subnet",
+      "evidence": "ALB nằm trong các public subnet của Default VPC, không nằm ngoài VPC."
+    }
+  ],
+  "exclusions": [
+    {
+      "label": "CloudFront",
+      "evidence": "Không đặt CloudFront hoặc S3 frontend vào đường truy cập hiện tại."
+    },
+    {
+      "label": "S3 frontend",
+      "evidence": "Không đặt CloudFront hoặc S3 frontend vào đường truy cập hiện tại."
+    },
+    {
+      "label": "NAT Gateway",
+      "evidence": "Không có NAT Gateway do stack Aurel này tạo."
+    },
+    {
+      "label": "Wake Lambda",
+      "evidence": "Idle scale-down đang tắt; không có Wake Lambda trong đường chạy hiện tại."
+    },
+    {
+      "label": "LiveKit AI Agent",
+      "evidence": "LiveKit Cloud hiện phục vụ media; không có LiveKit AI Agent trong luồng này."
+    },
+    {
+      "label": "Amazon Bedrock",
+      "evidence": "AI meeting notes gọi DeepSeek từ backend; không chạy qua Bedrock hoặc LiveKit Agent."
+    },
+    {
+      "label": "Stripe billing",
+      "evidence": "Stripe billing đang tắt."
+    },
+    {
+      "label": "Amazon Polly",
+      "evidence": "Không đưa Polly, Comprehend, IVS, WAF hoặc dịch vụ chỉ có trong code/hạ tầng cũ vào luồng đang hoạt động nếu chưa có evidence triển khai hiện tại."
+    },
+    {
+      "label": "Amazon Comprehend",
+      "evidence": "Không đưa Polly, Comprehend, IVS, WAF hoặc dịch vụ chỉ có trong code/hạ tầng cũ vào luồng đang hoạt động nếu chưa có evidence triển khai hiện tại."
+    },
+    {
+      "label": "Amazon IVS",
+      "evidence": "Không đưa Polly, Comprehend, IVS, WAF hoặc dịch vụ chỉ có trong code/hạ tầng cũ vào luồng đang hoạt động nếu chưa có evidence triển khai hiện tại."
+    },
+    {
+      "label": "AWS WAF",
+      "evidence": "Không đưa Polly, Comprehend, IVS, WAF hoặc dịch vụ chỉ có trong code/hạ tầng cũ vào luồng đang hoạt động nếu chưa có evidence triển khai hiện tại."
+    }
+  ],
+  "notes": [
+    {
+      "text": "Redirect livecap.logantai.com -> Vercel frontend; implementation of the redirect is unspecified, so no DNS-to-hosting runtime edge is drawn.",
+      "evidence": "https://livecap.logantai.com chuyển hướng sang frontend Vercel."
+    },
+    {
+      "text": "Một task thường trực, 0.5 vCPU, 1 GiB RAM.",
+      "evidence": "Cấu hình gần nhất: một task thường trực, 0.5 vCPU, 1 GiB RAM."
+    },
+    {
+      "text": "Một task không tạo thành kiến trúc active-active HA.",
+      "evidence": "Một task không tạo thành kiến trúc active-active HA."
+    },
+    {
+      "text": "Inbound port 8000 restricted to ALB security group.",
+      "evidence": "inbound port 8000 được giới hạn từ security group ALB."
+    },
+    {
+      "text": "Idle scale-down disabled; no Wake Lambda in current path.",
+      "evidence": "Idle scale-down đang tắt; không có Wake Lambda trong đường chạy hiện tại."
+    },
+    {
+      "text": "Admin group bypasses product quota but does not remove technical limits like concurrency or timeout.",
+      "evidence": "Quyền admin không tự loại bỏ mọi giới hạn kỹ thuật như concurrency hoặc timeout."
+    },
+    {
+      "text": "Shared-screen audio currently requires single-stream en-US source to vi target; not auto language detection.",
+      "evidence": "Riêng shared-screen audio hiện yêu cầu single-stream với nguồn en-US và đích vi; không mô tả nhánh này là tự nhận diện mọi ngôn ngữ."
+    },
+    {
+      "text": "Media room limit: one host and two viewers.",
+      "evidence": "Giới hạn media room hiện tại: một host và hai viewer."
+    },
+    {
+      "text": "Video cấu hình trần 3 Mbps, 30 FPS, có simulcast/adaptive streaming.",
+      "evidence": "Video cấu hình trần 3 Mbps, 30 FPS, có simulcast/adaptive streaming."
+    },
+    {
+      "text": "Audio cấu hình stereo 128 kbps.",
+      "evidence": "Audio cấu hình stereo 128 kbps."
+    },
+    {
+      "text": "Cấu hình không phải chất lượng hoặc throughput được bảo đảm.",
+      "evidence": "Các giá trị trên là cấu hình, không phải chất lượng hoặc throughput được bảo đảm."
+    },
+    {
+      "text": "Raw microphone/tab audio is not stored as a recording by the application.",
+      "evidence": "Raw microphone/tab audio không được ứng dụng lưu làm bản ghi."
+    },
+    {
+      "text": "SESSION_TIMEOUT: 300 giây.",
+      "evidence": "SESSION_TIMEOUT: 300 giây."
+    },
+    {
+      "text": "MAX_CONCURRENT_SESSIONS: 2.",
+      "evidence": "MAX_CONCURRENT_SESSIONS: 2."
+    },
+    {
+      "text": "MAX_SESSIONS_PER_IP: 1.",
+      "evidence": "MAX_SESSIONS_PER_IP: 1."
+    },
+    {
+      "text": "Retention cấu hình cho room/history: 1 ngày.",
+      "evidence": "Retention cấu hình cho room/history: 1 ngày."
+    },
+    {
+      "text": "AWS runtime verified 16/10/2026; code and Terraform state re-read 18/10/2026 — snapshot, not a fresh live check.",
+      "evidence": "AWS runtime được xác minh gần nhất ngày 16/10/2026; code và Terraform state được đọc lại ngày 18/10/2026."
+    },
+    {
+      "text": "Viewer-stuck-subtitle fix deployed but insufficient evidence to conclude all subtitle errors resolved.",
+      "evidence": "Bản sửa chống viewer làm kẹt phụ đề đã triển khai nhưng chưa đủ evidence để kết luận mọi lỗi phụ đề đã hết."
+    },
+    {
+      "text": "Backend tự ký URL rồi trả qua ALB; browser tải trực tiếp từ S3.",
+      "evidence": "Backend tự ký URL rồi trả qua ALB; browser dùng URL để tải trực tiếp từ S3."
+    },
+    {
+      "text": "Owner feedback on 18/10/2026; not a new live AWS verification.",
+      "evidence": "Không coi bản đính chính này là kiểm tra AWS live mới."
+    },
+    {
+      "text": "Terraform quản lý hạ tầng AWS Aurel; Vercel và LiveKit Cloud triển khai riêng.",
+      "evidence": "Terraform quản lý hạ tầng AWS Aurel; frontend Vercel và LiveKit Cloud là các phần triển khai riêng."
+    }
+  ],
+  "forbiddenFlows": [
+    {
+      "from": "fastapi",
+      "to": "host",
+      "evidence": "Không vẽ mũi tên trực tiếp FastAPI → browser cho các đường này."
+    },
+    {
+      "from": "fastapi",
+      "to": "viewer",
+      "evidence": "Không vẽ mũi tên trực tiếp FastAPI → browser cho các đường này."
+    },
+    {
+      "from": "fastapi",
+      "to": "secrets",
+      "evidence": "FastAPI không fetch các secret này bằng runtime API call."
+    },
+    {
+      "from": "fastapi",
+      "to": "livekit_sfu",
+      "labelIncludes": [
+        "token",
+        "JWT"
+      ],
+      "evidence": "Không vẽ LiveKit Cloud cấp participant token cho backend."
+    }
+  ]
+}

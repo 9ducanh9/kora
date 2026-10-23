@@ -1,0 +1,91 @@
+Hãy mô tả và vẽ sơ đồ kiến trúc hiện tại của LiveCap dựa trên các dữ kiện dưới đây. Đây là kiến trúc đã triển khai gần nhất, không phải kiến trúc đề xuất. Không tự thêm dịch vụ, tính năng, số liệu performance hoặc cam kết độ ổn định.
+
+## 1. Tổng quan
+
+LiveCap là ứng dụng web tạo phụ đề song ngữ Việt–Anh theo thời gian thực, chia sẻ phòng cho người xem, phát màn hình kèm âm thanh, xuất transcript và tạo AI meeting notes.
+
+Frontend dùng React, TypeScript, Vite; backend dùng Python và FastAPI. Backend hiện triển khai trên AWS account Aurel, region ap-southeast-1.
+
+## 2. Frontend và truy cập
+
+- Frontend được host trên Vercel tại https://livecap-aurel.vercel.app.
+- https://livecap.logantai.com chuyển hướng sang frontend Vercel.
+- Backend tại https://api-livecap.logantai.com.
+- DNS được quản lý tại Spaceship.
+- Frontend gọi HTTPS API và mở WSS trực tiếp tới domain backend.
+
+Không đặt CloudFront hoặc S3 frontend vào đường truy cập hiện tại.
+
+## 3. Backend và mạng AWS
+
+- Internet-facing Application Load Balancer kết thúc TLS bằng certificate ACM.
+- ALB chuyển HTTP/WebSocket tới FastAPI trên port 8000.
+- Backend chạy trên ECS Fargate, image lưu ở ECR.
+- Cấu hình gần nhất: một task thường trực, 0.5 vCPU, 1 GiB RAM.
+- Task đặt trong public subnet của default VPC, có public IP; inbound port 8000 được giới hạn từ security group ALB.
+- Không có NAT Gateway do stack Aurel này tạo.
+- Idle scale-down đang tắt; không có Wake Lambda trong đường chạy hiện tại.
+- Một task không tạo thành kiến trúc active-active HA.
+
+## 4. Đăng nhập và phân quyền
+
+- Amazon Cognito User Pool quản lý tài khoản, hỗ trợ Google OAuth.
+- Backend xác thực Cognito access token.
+- Backend kiểm tra nhóm Cognito `admin` cho quyền quản trị và bypass quota sản phẩm.
+- Quyền admin không tự loại bỏ mọi giới hạn kỹ thuật như concurrency hoặc timeout.
+- Host cần xác thực và quyền sở hữu phòng. Viewer dùng link/mã phòng để xem; quyền media của viewer chỉ cho subscribe.
+
+## 5. Hai luồng dữ liệu riêng biệt
+
+### A. Phụ đề và bản dịch
+
+Browser capture microphone hoặc audio từ tab → AudioWorklet chuyển thành PCM 16 kHz, 16-bit, mono → WSS `/ws/transcribe` → ALB → FastAPI → Amazon Transcribe Streaming → bộ đệm/gộp câu → Amazon Translate → phụ đề song ngữ trả về browser và được fan-out tới phòng qua WebSocket.
+
+Backend hỗ trợ dual-stream Việt/Anh. Riêng shared-screen audio hiện yêu cầu single-stream với nguồn en-US và đích vi; không mô tả nhánh này là tự nhận diện mọi ngôn ngữ.
+
+### B. Video và âm thanh cho người xem
+
+Browser host → WebRTC → LiveKit Cloud SFU → browser viewer.
+
+- Video/audio media không đi qua FastAPI hoặc ALB.
+- FastAPI gọi LiveKit Server API để tạo/xóa media room và cấp participant token có thời hạn, giới hạn theo phòng và vai trò.
+- Host publish screen video và audio microphone/tab đã trộn.
+- Viewer chỉ subscribe.
+- Giới hạn media room hiện tại: một host và hai viewer.
+- Preview của host dùng capture local.
+- Video cấu hình trần 3 Mbps, 30 FPS, có simulcast/adaptive streaming.
+- Audio cấu hình stereo 128 kbps.
+- Các giá trị trên là cấu hình, không phải chất lượng hoặc throughput được bảo đảm.
+- LiveKit Cloud hiện phục vụ media; không có LiveKit AI Agent trong luồng này.
+
+## 6. Lưu trữ, AI và vận hành
+
+- DynamoDB lưu metadata/history transcript, usage quota và dữ liệu phòng/phụ đề đã finalized.
+- Private S3 lưu transcript TXT được export; tải bằng presigned URL.
+- Raw microphone/tab audio không được ứng dụng lưu làm bản ghi.
+- AI meeting notes gọi DeepSeek từ backend; không chạy qua Bedrock hoặc LiveKit Agent.
+- Secrets Manager giữ credentials backend cho DeepSeek và LiveKit; không đưa secret vào frontend.
+- CloudWatch thu application/container logs.
+- Terraform quản lý hạ tầng AWS Aurel; frontend Vercel và LiveKit Cloud là các phần triển khai riêng.
+- Stripe billing đang tắt. Không đưa Polly, Comprehend, IVS, WAF hoặc dịch vụ chỉ có trong code/hạ tầng cũ vào luồng đang hoạt động nếu chưa có evidence triển khai hiện tại.
+
+## 7. Giới hạn và mức xác minh
+
+Terraform state gần nhất ghi:
+- ECS desired count: 1.
+- SESSION_TIMEOUT: 300 giây.
+- MAX_CONCURRENT_SESSIONS: 2.
+- MAX_SESSIONS_PER_IP: 1.
+- Retention cấu hình cho room/history: 1 ngày.
+
+Không khẳng định hệ thống unlimited hoàn toàn, tự scale-to-zero hoặc hỗ trợ nhiều backend task chỉ vì code có khả năng mở rộng.
+
+AWS runtime được xác minh gần nhất ngày 16/10/2026; code và Terraform state được đọc lại ngày 18/10/2026. Phân biệt snapshot này với kiểm tra live mới. Bản sửa chống viewer làm kẹt phụ đề đã triển khai nhưng chưa đủ evidence để kết luận mọi lỗi phụ đề đã hết.
+
+## Đầu ra
+
+1. Một sơ đồ Mermaid chia rõ Browser, Vercel, AWS và LiveKit Cloud.
+2. Tách đường HTTPS/WSS của phụ đề khỏi đường WebRTC của media.
+3. Giải thích ngắn luồng đăng nhập, phụ đề, media và export/meeting notes.
+4. Nêu giới hạn thực tế và điểm chưa xác minh.
+5. Không trộn kiến trúc CloudFront/S3/Wake Lambda/NAT của tài khoản cũ vào kiến trúc hiện tại.

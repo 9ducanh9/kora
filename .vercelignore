@@ -1,0 +1,10 @@
+.env*
+.next
+node_modules
+.git
+aws-architecture-icons-2026
+docs
+scratch_prompt.md
+*.log
+*.tsbuildinfo
+public/vendor

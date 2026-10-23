@@ -1,0 +1,25 @@
+node_modules/
+.next/
+out/
+.vercel/
+.env*
+!.env.example
+*.log
+*.tsbuildinfo
+coverage/
+public/vendor/
+aws-architecture-icons-2026/
+scratch_prompt.md
+kora_initial_spec.md
+
+# Local prompts, provider responses, audit captures and generated bundles.
+docs/*
+!docs/README.md
+!docs/architecture.md
+!docs/run-local.md
+!docs/images/
+!docs/specs/
+docs/images/*
+!docs/images/kora-editor.png
+.DS_Store
+Thumbs.db

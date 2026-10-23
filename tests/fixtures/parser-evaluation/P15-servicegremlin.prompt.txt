@@ -1,0 +1,162 @@
+OVERVIEW
+
+Create an AWS architecture diagram for ServiceGremlin, a graph-based infrastructure dependency visualizer.
+
+The diagram contains:
+- Users (client outside AWS Cloud)
+- AWS Cloud (outermost container enclosing all AWS resources)
+- Web UI component (logical group)
+- Client API (logical group)
+- Storage management component (logical group)
+- Cost component (logical group)
+- VPC (AWS infrastructure container)
+- Private subnet (AWS infrastructure container inside VPC)
+- Data component (logical group inside Private subnet)
+- Discovery component (logical group inside Private subnet)
+- Image deployment component (logical group)
+
+Arrange the top-level layout from left to right in this order:
+Users -> Web UI component -> Client API -> Storage management & Cost -> VPC (Data + Discovery) -> Image deployment component
+
+LOGICAL STRUCTURE & GROUPS
+
+AWS Cloud contains all AWS services and groups.
+Users stay outside AWS Cloud.
+
+WEB UI COMPONENT
+
+Create a dashed logical group called "Web UI component".
+It contains:
+- Web UI
+
+Users access Web UI.
+
+CLIENT API
+
+Create a dashed logical group called "Client API".
+It contains:
+- AWS WAF
+- AWS AppSync
+- Amazon API Gateway, label: "ServiceGremlin API"
+- Amazon CloudWatch
+- AWS Systems Manager
+
+Arrange them vertically.
+
+Web UI -> AWS WAF
+AWS WAF -> AWS AppSync
+AWS AppSync -> Amazon CloudWatch
+AWS AppSync -> AWS Systems Manager
+Amazon API Gateway ServiceGremlin API -> Amazon CloudWatch
+Amazon API Gateway ServiceGremlin API -> AWS Systems Manager
+
+COST COMPONENT
+
+Create a dashed logical group called "Cost component".
+It contains:
+- AWS Lambda, label: "Cost function"
+
+STORAGE MANAGEMENT COMPONENT
+
+Create a dashed logical group called "Storage management component".
+It contains:
+- Amazon Athena
+- Amazon S3 bucket, label: "CURBucket"
+- AWS Cost & Usage Report (CUR)
+- Amazon S3 bucket, label: "AthenaResultsBucket"
+
+Arrange them primarily left-to-right.
+
+AWS Lambda Cost function -> Amazon Athena
+Amazon Athena -> Amazon S3 CURBucket
+AWS Cost & Usage Report (CUR) -> Amazon S3 CURBucket
+AWS Lambda Cost function -> Amazon S3 AthenaResultsBucket
+
+VPC & SUBNET
+
+Create one VPC container.
+Inside the VPC create one Private subnet.
+
+Inside the Private subnet create two logical groups:
+1. Data component
+2. Discovery component
+
+DATA COMPONENT
+
+Create a dashed logical group called "Data component" inside the Private subnet.
+It contains:
+- AWS Lambda, label: "Gremlin function"
+- Amazon Neptune
+- AWS Lambda, label: "Search function"
+- Amazon OpenSearch Service
+
+Arrange Gremlin Lambda and Neptune on the upper row.
+Arrange Search Lambda and OpenSearch below them.
+
+AWS Lambda Gremlin function -> Amazon Neptune
+AWS Lambda Search function -> Amazon OpenSearch Service
+
+AWS AppSync -> AWS Lambda Gremlin function
+Amazon API Gateway ServiceGremlin API -> AWS Lambda Search function
+
+DISCOVERY COMPONENT
+
+Create a dashed logical group called "Discovery component" inside the Private subnet.
+It contains:
+- Amazon Elastic Container Service
+- AWS Fargate
+- Amazon Elastic Container Registry
+
+Arrange Amazon ECS above AWS Fargate and Amazon ECR.
+
+Amazon ECS -> AWS Fargate
+Amazon ECS -> Amazon ECR
+
+DISCOVERY INPUTS
+
+Outside the VPC but still inside AWS Cloud, place:
+- Amazon API Gateway, label: "ServiceGremlin API"
+- AWS SDK
+- AWS Config
+
+AWS Fargate -> AWS SDK
+AWS Fargate -> AWS Config
+AWS Fargate -> Amazon API Gateway ServiceGremlin API
+Amazon API Gateway ServiceGremlin API -> AWS Lambda Search function
+
+IMAGE DEPLOYMENT COMPONENT
+
+Create a dashed logical group called "Image deployment component".
+Place it on the far right.
+It contains vertically, from top to bottom:
+- Amazon S3 bucket, label: "DiscoveryBucket"
+- AWS CodePipeline
+- AWS CodeBuild
+- Container image
+
+AWS CodePipeline -> Amazon S3 DiscoveryBucket
+AWS CodePipeline -> AWS CodeBuild
+AWS CodeBuild -> Container image
+Container image -> Amazon Elastic Container Registry
+
+VISUAL REQUIREMENTS
+
+AWS Cloud:
+- outermost boundary
+- all AWS services and groups are inside it
+- Users remain outside
+
+VPC:
+- inside AWS Cloud
+
+Private subnet:
+- inside VPC
+
+Data component and Discovery component:
+- inside Private subnet
+
+Use compact AWS icon + label nodes.
+Logical component groups should use subtle dashed boundaries.
+AWS infrastructure groups must use the official AWS group visual grammar.
+Do not render large card-style nodes.
+The two API Gateway occurrences labeled ServiceGremlin API are two distinct instances. The instance inside Client API is the source of the CloudWatch and Systems Manager connections. The instance directly inside AWS Cloud, outside the VPC, receives the AWS Fargate connection and is the sole API Gateway source connected to Search function. The Search function connection is described twice; draw it once. Keep both display labels ServiceGremlin API. The top-level layout ordering is a visual arrangement instruction, not a list of additional dependency connections.

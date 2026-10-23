@@ -1,0 +1,368 @@
+/* Canvas Container & Background */
+.kora-canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: var(--canvas-bg);
+  overflow: hidden;
+}
+
+/* AWS Service Node (Compact Architecture Renderer V1) */
+.aws-service-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 96px;
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  box-shadow: none;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  user-select: none;
+  cursor: grab;
+}
+
+.aws-service-node:hover {
+  background: var(--node-hover-bg);
+  border-color: var(--node-hover-border);
+  box-shadow: none;
+}
+
+.aws-service-node.is-selected {
+  background: var(--node-selected-bg) !important;
+  border-color: var(--selection) !important;
+  box-shadow: 0 0 0 2px var(--node-selected-ring) !important;
+}
+
+/* External / Generic Node Distinction */
+.aws-service-node.is-external .aws-icon-wrapper {
+  border: 1px dashed color-mix(in srgb, var(--text-muted) 50%, transparent);
+  border-radius: 8px;
+  padding: 2px;
+  background: color-mix(in srgb, var(--surface-bg) 60%, transparent);
+}
+
+.aws-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.aws-service-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Node Label Container & Text */
+.aws-node-label-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: visible;
+}
+
+.aws-node-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+  cursor: text;
+}
+
+.kora-text-line {
+  display: block;
+  white-space: pre;
+}
+
+/* Presentation-Only Subtitle */
+.aws-node-subtitle {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.2;
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+}
+
+/* Fixed-Geometry Inline Label Input */
+.aws-node-label-input {
+  width: 100%;
+  max-width: 100%;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-primary);
+  background: var(--surface-bg);
+  border: 1px solid var(--accent-blue);
+  border-radius: 4px;
+  padding: 1px 2px;
+  outline: none;
+  box-sizing: border-box;
+  line-height: 1.25;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Deferred Connection Handles */
+.kora-handle {
+  width: 7px !important;
+  height: 7px !important;
+  background: var(--accent-aws) !important;
+  border: 1.5px solid var(--surface-bg) !important;
+  border-radius: 50% !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.15s ease, scale 0.15s ease !important;
+}
+
+.aws-service-node:hover .kora-handle,
+.aws-service-node.is-selected .kora-handle,
+.react-flow__handle-connecting,
+.react-flow__handle-valid {
+  opacity: 1 !important;
+}
+
+/* React Flow exposes only the eligible endpoint role while connecting. Keep
+   coincident source/target handles from intercepting one another's drops. */
+.aws-service-node:hover .kora-handle.connectionindicator,
+.aws-service-node.is-selected .kora-handle.connectionindicator,
+.kora-handle.connectingto.connectionindicator {
+  pointer-events: auto !important;
+}
+
+.kora-handle:hover {
+  scale: 1.3;
+  background: var(--surface-bg) !important;
+  border-color: var(--accent-aws) !important;
+}
+
+.kora-handle.react-flow__handle-top,
+.kora-handle.react-flow__handle-bottom {
+  left: 50% !important;
+}
+
+.kora-handle.react-flow__handle-left,
+.kora-handle.react-flow__handle-right {
+  top: 50% !important;
+}
+
+/* Containers (AWS Architecture Groups V2) */
+.kora-container-node {
+  border-radius: 6px;
+  position: relative;
+  box-sizing: border-box;
+  pointer-events: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kora-container-node * {
+  pointer-events: all;
+}
+
+.kora-container-node.is-selected {
+  outline: 2px dashed var(--selection) !important;
+  outline-offset: 2px;
+}
+
+/* AWS Cloud (Outer Enclosure) */
+.container-aws-cloud {
+  background: var(--container-cloud-bg);
+  border: 1.5px solid var(--container-cloud-border);
+}
+.container-aws-cloud .kora-group-title {
+  color: var(--container-cloud-text);
+  letter-spacing: 0.3px;
+}
+
+/* Region */
+.container-region {
+  background: var(--container-region-bg);
+  border: 1.5px dashed var(--container-region-border);
+}
+.container-region .kora-group-title {
+  color: var(--container-region-text);
+}
+
+/* VPC */
+.container-vpc {
+  background: var(--container-vpc-bg);
+  border: 1.5px solid var(--container-vpc-border);
+}
+.container-vpc .kora-group-title {
+  color: var(--container-vpc-text);
+}
+
+/* Availability Zone */
+.container-availability-zone {
+  background: var(--container-az-bg);
+  border: 1.5px dashed var(--container-az-border);
+}
+.container-availability-zone .kora-group-title {
+  color: var(--container-az-text);
+}
+
+/* Public Subnet */
+.container-subnet-public {
+  background: var(--container-subnet-public-bg);
+  border: 1.5px solid var(--container-subnet-public-border);
+}
+.container-subnet-public .kora-group-title {
+  color: var(--container-subnet-public-text);
+}
+
+/* Private Subnet */
+.container-subnet-private {
+  background: var(--container-subnet-private-bg);
+  border: 1.5px solid var(--container-subnet-private-border);
+}
+.container-subnet-private .kora-group-title {
+  color: var(--container-subnet-private-text);
+}
+
+/* Auto Scaling Group */
+.container-auto-scaling-group {
+  background: var(--container-asg-bg);
+  border: 1.5px dashed var(--container-asg-border);
+}
+.container-auto-scaling-group .kora-group-title {
+  color: var(--container-asg-text);
+}
+
+/* Corporate Data Center */
+.container-corporate-data-center {
+  background: var(--container-data-center-bg);
+  border: 1.5px solid var(--container-data-center-border);
+}
+.container-corporate-data-center .kora-group-title {
+  color: var(--container-data-center-text);
+}
+
+/* Generic / Security Group Fallback */
+.container-generic-group,
+.container-security-group {
+  background: var(--container-generic-bg);
+  border: 1.5px dashed var(--container-generic-border);
+}
+.container-generic-group .kora-group-title,
+.container-security-group .kora-group-title {
+  color: var(--container-generic-text);
+}
+
+/* Authentic AWS Group Header (Embedded top-left, zero floating pill shadow) */
+.kora-group-header {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: calc(100% - 20px);
+  user-select: none;
+  pointer-events: all;
+}
+
+.kora-group-badge-icon {
+  object-fit: contain;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.kora-group-title-wrapper {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 240px;
+}
+
+.kora-group-title {
+  font-family: var(--font-sans);
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+
+.kora-group-title-input {
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--surface-bg);
+  border: 1px solid var(--accent-blue);
+  border-radius: 4px;
+  padding: 1px 4px;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Connectors / Edges */
+.kora-connection-edge {
+  stroke: var(--connector) !important;
+  stroke-width: 2px !important;
+  transition: stroke 0.15s ease, stroke-width 0.15s ease;
+}
+
+.kora-connection-edge:hover,
+.kora-connection-edge.is-selected {
+  stroke: var(--connector-hover) !important;
+  stroke-width: 2.5px !important;
+}
+
+.kora-edge-label-container {
+  background: var(--surface-bg);
+  border: 1px solid var(--surface-border);
+  padding: 4px 6px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.kora-edge-label-container:hover {
+  border-color: var(--connector-hover);
+}
+
+.kora-edge-label {
+  display: block;
+  max-width: 200px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 13px;
+  color: var(--text-primary);
+  letter-spacing: 0.2px;
+}
+
+.kora-edge-label-input {
+  font-size: 10px;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--surface-bg);
+  border: 1px solid var(--accent-blue);
+  border-radius: 3px;
+  padding: 1px 4px;
+  outline: none;
+}
