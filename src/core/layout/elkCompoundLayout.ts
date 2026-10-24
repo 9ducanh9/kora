@@ -1,4 +1,4 @@
-import ELK, { ElkEdgeSection, ElkExtendedEdge, ElkNode, ElkPort, ElkPoint } from 'elkjs/lib/elk.bundled.js';
+import ELK, { ElkEdgeSection, ElkExtendedEdge, ElkNode, ElkPort } from 'elkjs/lib/elk.bundled.js';
 import { KoraArchitectureModel, IRConnection, IRContainer, IRNode } from '../ir/types';
 import { ConnectionPresentation, ConnectionRoute, ConnectionSide, DiagramDocument, NodePresentation, ContainerPresentation, Point, Rect } from '../diagram/types';
 import { getContainerVisualConfig } from '../containers/registry';
@@ -225,7 +225,7 @@ function heapPop(heap: SearchState[]): SearchState | undefined {
 }
 
 /** Bounded rectilinear visibility-grid search. Endpoints and sides remain fixed. */
-export function repairOrthogonalRoute(start: Point, end: Point, obstacles: Rect[], connectionId = ''): Point[] | undefined {
+export function repairOrthogonalRoute(start: Point, end: Point, obstacles: Rect[], _connectionId = ''): Point[] | undefined {
   if (Math.abs(start.x - end.x) < 0.01 && Math.abs(start.y - end.y) < 0.01) {
     const loop = Math.abs(start.x - end.x) < 0.01 ? [{ x: start.x + 32, y: start.y }, { x: start.x + 32, y: start.y - 32 }, { x: start.x, y: start.y - 32 }] : [];
     return simplifyPoints([start, ...loop, end]);
@@ -321,9 +321,9 @@ export function normalizeSections(sections: ElkEdgeSection[] | undefined, offset
   return path;
 }
 
-function walkEdges(node: ElkNode, offsetX: number, offsetY: number, result: OwnedEdge[]): void {
+function _walkEdges(node: ElkNode, offsetX: number, offsetY: number, result: OwnedEdge[]): void {
   for (const edge of (node as ElkNode & { edges?: ElkExtendedEdge[] }).edges ?? []) result.push({ edge, offsetX, offsetY });
-  for (const child of node.children ?? []) walkEdges(child, offsetX + (child.x ?? 0), offsetY + (child.y ?? 0), result);
+  for (const child of node.children ?? []) _walkEdges(child, offsetX + (child.x ?? 0), offsetY + (child.y ?? 0), result);
 }
 
 function createPrivateId(kind: InternalKind, used: Set<string>, sequence: { value: number }): string {
@@ -570,7 +570,7 @@ async function buildCandidate(model: KoraArchitectureModel, options: LayoutOptio
     }
   }
   const inputSignature = await createRouteInputSignature(model, nodeBoxes, containerBoxes, sideOnly, metrics);
-  const nodeObstacles = Object.values(nodeBoxes);
+  const _nodeObstacles = Object.values(nodeBoxes);
   const routePresentations: Record<string, ConnectionPresentation> = { ...sideOnly };
   const routedPoints = new Map<string, Point[]>();
   const loopCandidatesByConnection = new Map<string, Point[][]>();

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { createEmptyDiagramDocument, DiagramDocument } from '../src/core/diagram/types';
+import { createEmptyDiagramDocument } from '../src/core/diagram/types';
 import { decodeDiagramDocument, validateDiagramDocument } from '../src/core/diagram/validator';
 import { DIAGRAM_STORAGE_KEY, StorageAdapter } from '../src/core/diagram/storage';
 import { PersistenceCoordinator } from '../src/core/workspace/persistenceCoordinator';
 import { CommandEngine } from '../src/core/commands/commandEngine';
-import { SetDiagramDocumentCommand, UpdateNodeLabelCommand } from '../src/core/commands/commands';
+import { SetDiagramDocumentCommand } from '../src/core/commands/commands';
 import { OperationCoordinator } from '../src/core/diagram/operationCoordinator';
 import { awaitInteraction, cancelActiveInteractions, registerActiveInteraction, registerCancellablePreview, settleActiveInteractions } from '../src/core/editor/interactionSettlement';
 

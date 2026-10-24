@@ -10,7 +10,7 @@
     "dev:turbo": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint src scripts tests --max-warnings 0",
     "prepare-assets": "node scripts/build-asset-manifest.mjs",
     "test:parser": "tsx scripts/test-parser.ts",
     "test:baseline": "tsx scripts/test-baseline.ts",
@@ -33,23 +33,34 @@
     "compare:parser-evaluations": "tsx scripts/compare-parser-runs.ts",
     "test:workspace-experience": "tsx scripts/test-workspace-experience.ts",
     "test:diagram-export": "tsx scripts/test-diagram-export.ts",
-    "test:server-guards": "node scripts/test-bounded-json-body.mjs"
+    "test:server-guards": "node scripts/test-bounded-json-body.mjs",
+    "typecheck": "tsc --noEmit",
+    "test:ci": "node scripts/test-offline.cjs",
+    "test:browser": "playwright test"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
     "@xyflow/react": "^12.4.3",
     "elkjs": "^0.9.3",
     "lucide-react": "^1.16.0",
-    "next": "^15.2.1",
+    "next": "15.5.28",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "zod": "^3.24.2"
+    "zod": "4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/node": "^22.13.9",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "eslint": "10.13.0",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "8.72.0"
+  },
+  "overrides": {
+    "sharp": "0.35.5",
+    "postcss": "8.5.31",
+    "source-map-js": "1.2.2"
   }
 }

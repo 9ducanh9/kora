@@ -5,7 +5,7 @@
 <p align="center">Mô tả kiến trúc AWS. Nhận sơ đồ. Chỉnh theo cách của bạn.</p>
 
 <p align="center">
-  <a href="https://kora-nine-kappa.vercel.app/">Mở editor</a> ·
+  <a href="https://kora.aurel.id.vn/">Mở editor</a> ·
   <a href="docs/architecture.md">Kiến trúc</a> ·
   <a href="docs/run-local.md">Chạy local</a> ·
   <a href="docs/README.md">Tài liệu</a>
@@ -25,8 +25,7 @@ cầu đã trích xuất, sau đó sắp xếp icon AWS trong các lớp cloud, 
 
 Ảnh là một sơ đồ mẫu trong editor. **Bản online hiện hỗ trợ chỉnh sửa, sơ đồ mẫu,
 import và export; tính năng gọi AI đang khóa trên production.** Có thể dùng
-DeepSeek ở môi trường local với API key riêng. Tên miền `kora.aurel.id.vn` đang
-được kết nối; link editor phía trên dùng địa chỉ Vercel hiện có.
+DeepSeek ở môi trường local với API key riêng. Editor được mở tại `kora.aurel.id.vn`.
 
 ## Chức năng
 

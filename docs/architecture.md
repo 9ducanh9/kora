@@ -49,7 +49,8 @@ tab. JSON preserves an editable document; SVG and PNG are image exports.
 ## Production boundary
 
 The public editor runs on Vercel. The generation API returns 503 in production;
-`/api/health` reports generation disabled. Supplying an API key does not bypass
+`/api/health` reports editor liveness with HTTP 200; `/api/ready` returns 503 while
+generation is disabled. Supplying an API key does not bypass
 that gate. Hosted identity, entitlements/billing, shared usage limits, and usage
 accounting must be integrated before enabling public generation.
 

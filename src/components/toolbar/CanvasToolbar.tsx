@@ -41,6 +41,7 @@ import { renderDiagramSvg } from '@/core/export/svg';
 import { rasterizeDiagramPng } from '@/core/export/png';
 import { startDiagramDownload } from '@/core/export/download';
 import { DiagramExportError } from '@/core/export/limits';
+import { DOCUMENT_LIMITS } from '@/core/diagram/resourceLimits';
 import { cancelActiveInteractions, settleActiveInteractions } from '@/core/editor/interactionSettlement';
 
 interface CanvasToolbarProps {
@@ -275,6 +276,12 @@ export const CanvasToolbar: React.FC<CanvasToolbarProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > DOCUMENT_LIMITS.maxBytes) {
+      onSetIssues([{ code: 'DOCUMENT_RESOURCE_LIMIT', severity: 'error', path: [], message: 'Diagram JSON exceeds the 10 MiB import limit.' }]);
+      onShowMessage('File is too large. Import supports JSON files up to 10 MiB.');
+      e.target.value = '';
+      return;
+    }
     cancelActiveInteractions();
     onInvalidateOperations();
     const ticket = onBeginOperation();

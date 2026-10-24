@@ -7,6 +7,8 @@ out/
 *.log
 *.tsbuildinfo
 coverage/
+test-results/
+playwright-report/
 public/vendor/
 aws-architecture-icons-2026/
 scratch_prompt.md

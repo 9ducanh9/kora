@@ -1,7 +1,7 @@
 import { DiagramDocument, Point, Rect } from '../diagram/types';
 import { EXPORT_LIMITS, DiagramExportError } from './limits';
 
-export interface DiagramBounds extends Rect {}
+export type DiagramBounds = Rect;
 
 function textFields(document: DiagramDocument): string[] {
   return [

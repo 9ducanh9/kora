@@ -223,7 +223,9 @@ async function run() {
   const changedObstacle = { ...nodeBoxes, obstacle: { ...nodeBoxes.obstacle, x: nodeBoxes.obstacle.x + 25 } };
   const changedSignature = await createRouteInputSignature(model, changedObstacle, {}, result.document.presentation.connections ?? {}, result.metrics);
   assert(changedSignature !== result.document.presentation.connections?.['parallel-a']?.route?.inputSignature, 'moving a non-endpoint obstacle invalidates every global cached route signature');
-  const cached = result.document.presentation.connections?.['parallel-a']?.route!;
+  const cached = result.document.presentation.connections?.['parallel-a']?.route;
+  assert(Boolean(cached), 'the parallel fixture has a cached route');
+  if (!cached) throw new Error('Missing parallel route fixture');
   assert(cachedRouteForRender(result.document, 'parallel-a', cached, cached.inputSignature, model.connections.find(connection => connection.id === 'parallel-a')?.label, result.metrics) === cached, 'cancelling a geometry preview restores the untouched route cache');
   const oldEndpoint = (box: Rect, side: ConnectionSide, ratio: number): Point => side === 'right' ? { x: box.x + box.width, y: box.y + box.height * ratio }
     : { x: box.x, y: box.y + box.height * ratio };

@@ -1,5 +1,6 @@
 import { DiagramDocument } from './types';
 import { DiagramDocumentSchema } from './schema';
+import { checkDocumentResources, DOCUMENT_LIMITS } from './resourceLimits';
 import { validateArchitectureModel } from '../ir/validator';
 import { ValidationIssue, ValidationResult, validationFailure, validationSuccess, zodIssues } from '../validation/issues';
 
@@ -21,6 +22,8 @@ function semanticIssuePath(issuePath: Array<string | number>, doc: DiagramDocume
 }
 
 export function validateDiagramDocument(raw: unknown): ValidationResult<DiagramDocument> {
+  const resourceIssues = checkDocumentResources(raw);
+  if (resourceIssues.length) return validationFailure(resourceIssues);
   const parsed = DiagramDocumentSchema.safeParse(raw);
   if (!parsed.success) return validationFailure(zodIssues(parsed.error.issues, 'DOCUMENT_SCHEMA'));
 
@@ -39,10 +42,6 @@ export function validateDiagramDocument(raw: unknown): ValidationResult<DiagramD
     }
   }
 
-  const presentationRecords: Array<[string, Record<string, unknown>]> = [
-    ['nodes', document.presentation.nodes],
-    ['containers', document.presentation.containers]
-  ];
   for (const [kind, semantic] of [['nodes', document.semantic.nodes], ['containers', document.semantic.containers]] as const) {
     const semanticKeys = Object.keys(semantic).sort();
     const presentationKeys = Object.keys(document.presentation[kind]).sort();
@@ -84,6 +83,9 @@ export function validateDiagramDocument(raw: unknown): ValidationResult<DiagramD
 }
 
 export function decodeDiagramDocument(json: string): ValidationResult<DiagramDocument> {
+  if (json.length > DOCUMENT_LIMITS.maxBytes || new TextEncoder().encode(json).byteLength > DOCUMENT_LIMITS.maxBytes) {
+    return validationFailure([issue('DOCUMENT_RESOURCE_LIMIT', [], 'Diagram JSON exceeds the 10 MiB limit.')]);
+  }
   let raw: unknown;
   try {
     raw = JSON.parse(json) as unknown;

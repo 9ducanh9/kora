@@ -15,7 +15,7 @@ export const IRNodeSchema = z.object({
   assetId: z.string().optional(),
   subtitle: z.string().optional(),
   containerId: z.string().optional(),
-  metadata: z.record(z.string()).optional()
+  metadata: z.record(z.string(), z.string()).optional()
 }).strict();
 
 export const ConnectionRelationshipSchema = z.enum([

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, ChevronUp, Key, Check } from 'lucide-react';
+import { Sparkles, ChevronUp, Key } from 'lucide-react';
 import './prompt.css';
 import { DiagramDocument, DiagramSource } from '@/core/diagram/types';
 import { cancelActiveInteractions } from '@/core/editor/interactionSettlement';
@@ -69,7 +69,8 @@ export const PromptHeader: React.FC<PromptHeaderProps> = ({
 }) => {
   const [prompt, setPrompt] = useState(source?.prompt ?? '');
   const [apiKey, setApiKey] = useState('');
-  const [mode, setMode] = useState<'deepseek' | 'mock'>('deepseek');
+  const productionLocked = process.env.NODE_ENV === 'production';
+  const [mode, setMode] = useState<'deepseek' | 'mock'>(productionLocked ? 'mock' : 'deepseek');
   const [isGenerating, setIsGenerating] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -80,7 +81,8 @@ export const PromptHeader: React.FC<PromptHeaderProps> = ({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      try { setApiKey(localStorage.getItem('kora_deepseek_api_key') ?? ''); } catch { setApiKey(''); }
+      // Migrate away from persistent browser credentials without reading them.
+      try { localStorage.removeItem('kora_deepseek_api_key'); } catch { /* Storage may be unavailable. */ }
     }
   }, []);
 
@@ -98,18 +100,16 @@ export const PromptHeader: React.FC<PromptHeaderProps> = ({
 
   const handleApiKeyChange = (val: string) => {
     setApiKey(val);
-    if (typeof window !== 'undefined') {
-      try {
-        if (val.trim()) localStorage.setItem('kora_deepseek_api_key', val.trim());
-        else localStorage.removeItem('kora_deepseek_api_key');
-      } catch { setErrorMessage('The API key could not be stored in this browser.'); }
-    }
   };
 
   const reviewedRequirements = source?.semanticReview?.requirements;
   if (!isOpen) return null;
 
   const handleGenerate = async () => {
+    if (productionLocked && mode === 'deepseek') {
+      setErrorMessage('Live AI generation is only available in local development. Use Quick Test or import a diagram.');
+      return;
+    }
     if (!prompt.trim()) return;
     setErrorDetails({ issues: [] });
     if (mode === 'mock' && prompt !== SAMPLE_PROMPTS[0].text) {
@@ -282,8 +282,8 @@ export const PromptHeader: React.FC<PromptHeaderProps> = ({
                 type="button"
                 className={`mode-btn ${mode === 'deepseek' ? 'is-active' : ''}`}
                 onClick={() => setMode('deepseek')}
-                disabled={isGenerating}
-                title="Real DeepSeek V3 Structured Output"
+                disabled={isGenerating || productionLocked}
+                title={productionLocked ? 'Live AI generation is only available in local development' : 'Real DeepSeek V3 Structured Output'}
               >
                 DeepSeek (V3)
               </button>
@@ -295,7 +295,7 @@ export const PromptHeader: React.FC<PromptHeaderProps> = ({
                 className={`sample-btn ${apiKey ? 'is-active' : ''}`}
                 onClick={() => setShowKeyInput(!showKeyInput)}
                 disabled={isGenerating}
-                title={apiKey ? 'DeepSeek API Key đã lưu (Click để đổi)' : 'Cài đặt DeepSeek API Key'}
+                title={apiKey ? 'DeepSeek API Key for this session (click to change)' : 'Cài đặt DeepSeek API Key'}
                 style={{ position: 'relative' }}
               >
                 <Key size={12} />
@@ -327,6 +327,8 @@ export const PromptHeader: React.FC<PromptHeaderProps> = ({
             )}
           </div>
         </div>
+
+        {productionLocked && <p role="status" className="prompt-generation-notice">Live AI generation is not enabled on this deployment. Use Quick Test with Acceptance Test, or import a diagram.</p>}
 
         {source && (
           <details className="prompt-source-details">

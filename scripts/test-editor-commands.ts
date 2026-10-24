@@ -7,7 +7,6 @@ import {
   MoveDiagramObjectsCommand,
   ReconnectConnectionCommand,
   SetDiagramDocumentCommand,
-  UpdateConnectionLabelCommand,
   UpdateContainerLabelCommand,
   UpdateNodeLabelCommand
 } from '../src/core/commands/commands';

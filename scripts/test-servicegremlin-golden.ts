@@ -75,12 +75,15 @@ async function runGoldenSemanticRegression() {
   const topLevelGroups = ['group-web-ui', 'group-client-api', 'group-storage', 'group-cost', 'vpc-main', 'group-image-deploy'];
   for (const gid of topLevelGroups) {
     const c = model.containers.find(container => container.id === gid);
-    if (c?.parentId !== cloud.id) {
-      console.error(`[FAIL] Top-level container "${gid}" parentId is "${c?.parentId}", expected "${cloud.id}"`);
+    // The fixture's Web UI is a provider-unspecified browser component.
+    // The other named groups contain explicit AWS services.
+    const expectedParent = gid === 'group-web-ui' ? undefined : cloud.id;
+    if (c?.parentId !== expectedParent) {
+      console.error(`[FAIL] Top-level container "${gid}" parentId is "${c?.parentId}", expected "${expectedParent}"`);
       process.exit(1);
     }
   }
-  console.log(`[PASS] All 6 top-level containers scoped inside "${cloud.id}".`);
+  console.log('[PASS] AWS-only groups are inside AWS Cloud; browser/external groups remain outside.');
 
   // Verify nested containment
   const subnet = model.containers.find(c => c.id === 'subnet-priv');

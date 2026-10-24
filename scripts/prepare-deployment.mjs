@@ -16,7 +16,7 @@ async function collect(directory) {
 await collect('src');
 await collect('public');
 paths.push('package.json', 'package-lock.json', 'next.config.mjs', 'tsconfig.json', 'next-env.d.ts',
-  'scripts/prepare-layout-worker.mjs', 'tests/fixtures/mock.parser.ts', '.vercelignore');
+  'eslint.config.mjs', 'scripts/prepare-layout-worker.mjs', 'tests/fixtures/mock.parser.ts', '.vercelignore');
 paths.sort();
 const files = [];
 const manifest = [];

@@ -1,5 +1,5 @@
-import { resolveNodeDisplay, getAssetShortName } from '../src/core/assets/registry';
-import { getNodeDimensions, isTwoLineLabel, COMPACT_NODE_WIDTH } from '../src/core/layout/nodeDimensions';
+import { resolveNodeDisplay } from '../src/core/assets/registry';
+import { getNodeDimensions, COMPACT_NODE_WIDTH } from '../src/core/layout/nodeDimensions';
 
 function assert(condition: boolean, message: string) {
   if (!condition) {

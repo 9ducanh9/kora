@@ -13,7 +13,10 @@ import {
   OnConnect,
   OnNodeDrag,
   SelectionMode,
-  useStoreApi
+  useStoreApi,
+  useReactFlow,
+  NodeChange,
+  EdgeChange
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './canvas.css';
@@ -105,6 +108,8 @@ export const KoraCanvas: React.FC<KoraCanvasProps> = ({
 }) => {
   const documentEpochAtRender = getDocumentEpoch?.() ?? 0;
   const flowStore = useStoreApi<Node, Edge>();
+  const { getViewport, setViewport } = useReactFlow();
+  const panSession = useRef<{ x: number; y: number; viewport: { x: number; y: number; zoom: number } } | null>(null);
   const dragSession = useRef<DragSession | null>(null);
   const keyboardSession = useRef<{ key: string; moves: Record<string, MoveEntry>; delta: Position } | null>(null);
   const [previewPositions, setPreviewPositions] = useState<Record<string, Position>>({});
@@ -113,6 +118,23 @@ export const KoraCanvas: React.FC<KoraCanvasProps> = ({
   const [routeMetrics, setRouteMetrics] = useState<VisualMetricsSnapshot | null>(null);
   const textContext = useMemo(() => routeMetrics ? createTextMeasureContext(routeMetrics.profile.fontFamily) : undefined, [routeMetrics?.profile.fontFamily]);
   const lastRouteWarning = useRef<string>('');
+
+  useEffect(() => {
+    const move = (event: MouseEvent) => {
+      const session = panSession.current;
+      if (!session) return;
+      void setViewport({ ...session.viewport, x: session.viewport.x + event.clientX - session.x, y: session.viewport.y + event.clientY - session.y });
+    };
+    const stop = () => { panSession.current = null; };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', stop);
+    window.addEventListener('blur', stop);
+    return () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', stop);
+      window.removeEventListener('blur', stop);
+    };
+  }, [setViewport]);
 
   useEffect(() => registerCancellablePreview('kora-canvas', () => {
     if (dragSession.current) dragSession.current.cancelled = true;
@@ -385,8 +407,30 @@ export const KoraCanvas: React.FC<KoraCanvasProps> = ({
     cancelActiveLayoutJobs();
   }, [onInvalidateOperations]);
 
-  const onSelectionChange = useCallback(({ nodes: selectedNodes, edges: selectedEdges }: { nodes: Node[]; edges: Edge[] }) => {
-    setSelection({ nodes: selectedNodes.map(node => node.id), edges: selectedEdges.map(edge => edge.id) });
+  const onNodesChange = useCallback((changes: NodeChange[]) => {
+    const selected = changes.filter(change => change.type === 'select');
+    if (!selected.length) return;
+    setSelection(current => {
+      const ids = new Set(current.nodes);
+      for (const change of selected) {
+        if (change.selected) ids.add(change.id);
+        else ids.delete(change.id);
+      }
+      return { ...current, nodes: [...ids] };
+    });
+  }, []);
+
+  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
+    const selected = changes.filter(change => change.type === 'select');
+    if (!selected.length) return;
+    setSelection(current => {
+      const ids = new Set(current.edges);
+      for (const change of selected) {
+        if (change.selected) ids.add(change.id);
+        else ids.delete(change.id);
+      }
+      return { ...current, edges: [...ids] };
+    });
   }, []);
 
   const commitNudge = useCallback((key: string) => {
@@ -481,6 +525,16 @@ export const KoraCanvas: React.FC<KoraCanvasProps> = ({
   return (
     <div
       className="kora-canvas-container"
+      onMouseDownCapture={event => {
+        if (event.button !== 2) return;
+        const target = event.target;
+        if (!(target instanceof Element) || target.closest('input, textarea, select, [contenteditable="true"], .react-flow__minimap')) return;
+        // React Flow's draggable nodes carry nopan. Own the right-button pan
+        // here so it also works across node/container bodies; left drag stays native.
+        event.preventDefault();
+        event.stopPropagation();
+        panSession.current = { x: event.clientX, y: event.clientY, viewport: getViewport() };
+      }}
       onContextMenu={event => {
         const target = event.target;
         if (target instanceof Element && target.closest('input, textarea, [contenteditable="true"]')) return;
@@ -499,7 +553,8 @@ export const KoraCanvas: React.FC<KoraCanvasProps> = ({
         onReconnectStart={onConnectStart}
         onConnect={onConnect}
         onConnectStart={onConnectStart}
-        onSelectionChange={onSelectionChange}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         fitView
         fitViewOptions={{ padding: 0.2 }}
         minZoom={0.1}

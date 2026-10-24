@@ -47,13 +47,13 @@ export function formatValidationIssues(issues: ValidationIssue[]): string {
 }
 
 export function zodIssues(
-  zodIssues: Array<{ code: string; path: Array<string | number>; message: string }>,
+  zodIssues: Array<{ code: string; path: PropertyKey[]; message: string }>,
   codePrefix: string
 ): ValidationIssue[] {
   return zodIssues.map(issue => ({
     code: `${codePrefix}_${issue.code.toUpperCase().replace(/[^A-Z0-9]+/g, '_')}`,
     severity: 'error',
-    path: issue.path,
+    path: issue.path.map(part => typeof part === 'symbol' ? String(part) : part),
     message: issue.message,
     entityId: typeof issue.path[issue.path.length - 1] === 'string' ? String(issue.path[issue.path.length - 1]) : undefined
   }));

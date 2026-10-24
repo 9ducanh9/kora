@@ -15,8 +15,8 @@ catalog is not required to run the editor.
 generation unless a key is entered in the prompt settings. `DEEPSEEK_MODEL`
 optionally overrides the default `deepseek-chat`. Keep keys in `.env.local`,
 never in source or a `NEXT_PUBLIC_` variable. Generation sends the supplied
-architecture description to DeepSeek. Keys entered in the prompt settings are
-stored in that browser's local storage; clear the field to remove the saved key.
+architecture description to DeepSeek. Keys entered in the prompt settings stay
+in memory until refresh; legacy saved browser keys are removed on startup.
 
 `npm run build` and `npm start` run a production build, whose generation endpoint
 stays disabled. Use development mode to test live generation. The production
@@ -61,5 +61,7 @@ npm run build
 
 `npm run test:deepseek` calls the real provider and requires a key; it can incur
 provider charges. Most regression suites use local fixtures or mocked responses.
-The current `lint` script uses the legacy `next lint` command; use the TypeScript
-check above rather than treating it as a configured lint gate.
+`npm run lint` runs ESLint without an interactive setup prompt. `npm run test:ci`
+runs all offline suites with provider keys removed from their environment.
+After building, `npm run test:browser` runs the Chromium regression tests (install
+the browser first with `npx playwright install chromium`). CI runs all these checks.

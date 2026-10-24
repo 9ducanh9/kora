@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import { validateArchitectureModel } from '../src/core/ir/validator';
 import { resolveAsset, resolveNodeDisplay } from '../src/core/assets/registry';
-import { ensureAwsCloudHierarchy } from '../src/core/ir/normalizeContainers';
 import { prepareArchitectureModel } from '../src/core/architecture/prepareModel';
 import { computeCompoundLayout } from '../src/core/layout/elkCompoundLayout';
 import { MockArchitectureParser } from '../tests/fixtures/mock.parser';
@@ -32,7 +31,7 @@ async function runDiagnostics() {
   console.log(`- Mock Output Container Count: ${mockResult.model.containers.length}`);
   console.log(`- Mock Output Connection Count: ${mockResult.model.connections.length}`);
   
-  const mockDroppedCount = 25; // Prompt describes ~29 entities, mock gives 4
+  const _mockDroppedCount = 25; // Prompt describes ~29 entities, mock gives 4
   console.log(`=> CRITICAL FINDING: MockArchitectureParser DISCARDED the prompt entirely and returned its 4-node hardcoded default fixture: [Users, CloudFront, ALB, ECS]!`);
 
   // Now create the raw Architecture IR representing the full prompt to test Stages 2 - 8

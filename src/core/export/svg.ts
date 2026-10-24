@@ -1,11 +1,11 @@
 import { DiagramDocument, Point, Rect } from '../diagram/types';
 import { validateDiagramDocument } from '../diagram/validator';
-import { IRNode, KoraArchitectureModel } from '../ir/types';
+import { KoraArchitectureModel } from '../ir/types';
 import { resolveAsset, resolveNodeDisplay } from '../assets/registry';
 import { getContainerVisualConfig } from '../containers/registry';
 import { resolveConnectionAnchor } from '../layout/anchors';
 import { cachedRouteForRender, createRouteInputSignature } from '../layout/routeCache';
-import { measureVisuals, measureVisualsFromCurrentBrowser, measureVisualsInBrowser, VisualMetricsSnapshot } from '../layout/visualMetrics';
+import { measureVisuals, measureVisualsFromCurrentBrowser, VisualMetricsSnapshot } from '../layout/visualMetrics';
 import { resolveConnectionGeometry } from '../layout/connectionGeometry';
 import { createTextMeasureContext, resolveTextLayout, TextLayout } from '../layout/textLayout';
 import { DiagramBounds, diagramBounds, preflightDiagram } from './preflight';
@@ -132,7 +132,10 @@ function containerDepth(doc: DiagramDocument, id: string): number {
 
 async function renderDiagramSvgWithSignal(rawDocument: unknown, options: SvgExportOptions = {}): Promise<SvgExportResult> {
   const validated = validateDiagramDocument(rawDocument);
-  if (!validated.ok) throw new DiagramExportError('DOCUMENT_INVALID', 'The current diagram is invalid and cannot be exported.');
+  if (!validated.ok) {
+    const resource = validated.issues.find(issue => issue.code === 'DOCUMENT_RESOURCE_LIMIT');
+    throw new DiagramExportError(resource ? 'DOCUMENT_RESOURCE_LIMIT' : 'DOCUMENT_INVALID', resource?.message ?? 'The current diagram is invalid and cannot be exported.');
+  }
   const doc = validated.value;
   preflightDiagram(doc);
   throwIfAborted(options.signal);

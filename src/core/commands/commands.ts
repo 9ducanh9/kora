@@ -5,7 +5,7 @@ import {
   DiagramDocument,
   NodePresentation
 } from '../diagram/types';
-import { IRConnection, IRContainer, IRNode } from '../ir/types';
+import { IRConnection, IRNode } from '../ir/types';
 import { getNodeDimensions } from '../layout/nodeDimensions';
 import { getContainerVisualConfig } from '../containers/registry';
 

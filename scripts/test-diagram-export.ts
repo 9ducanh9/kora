@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { webcrypto } from 'node:crypto';
 import { BASELINE_CASES } from '../tests/fixtures/baseline/cases';
-import { createEmptyDiagramDocument, DiagramDocument, Rect } from '../src/core/diagram/types';
+import { createEmptyDiagramDocument, DiagramDocument } from '../src/core/diagram/types';
 import { KoraArchitectureModel } from '../src/core/ir/types';
 import { getNodeDimensions, resolveEffectiveNodeBox } from '../src/core/layout/nodeDimensions';
 import { resolveConnectionAnchor } from '../src/core/layout/anchors';
@@ -225,7 +225,7 @@ async function main() {
     const originalFetch = globalThis.fetch;
     globalThis.fetch = (async () => { requests++; return new Response('', { status: 404 }); }) as typeof fetch;
     try {
-      await assert.rejects(() => renderDiagramSvg(tooLong), (error: unknown) => error instanceof DiagramExportError && error.code === 'TEXT_FIELD_LIMIT');
+      await assert.rejects(() => renderDiagramSvg(tooLong), (error: unknown) => error instanceof DiagramExportError && error.code === 'DOCUMENT_RESOURCE_LIMIT');
       assert.equal(requests, 0);
     } finally { globalThis.fetch = originalFetch; }
     await withLocalAssetFetch(async () => {
@@ -292,7 +292,7 @@ async function main() {
   });
 
   await check('U28 cancelling while local fonts are pending removes every export abort listener', async () => {
-    let listenersAdded = 0; let listenersRemoved = 0; let finishFonts!: () => void;
+    let listenersAdded = 0; let listenersRemoved = 0;
     class TrackedSignal {
       aborted = false;
       reason: unknown;

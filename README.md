@@ -5,7 +5,7 @@
 <p align="center">Describe an AWS architecture. Get a diagram. Make it yours.</p>
 
 <p align="center">
-  <a href="https://kora-nine-kappa.vercel.app/">Open the editor</a> ·
+  <a href="https://kora.aurel.id.vn/">Open the editor</a> ·
   <a href="docs/architecture.md">Architecture</a> ·
   <a href="docs/run-local.md">Run locally</a> ·
   <a href="docs/README.md">Documentation</a>
@@ -27,8 +27,7 @@ nested cloud, VPC, and subnet boundaries.
 The screenshot shows an example diagram in the editor. **The public deployment
 currently supports editing, examples, import, and export; live AI generation is
 disabled in production.** DeepSeek generation is available in local development
-with your own API key. The custom domain `kora.aurel.id.vn` is being connected;
-the editor link above uses the existing Vercel address.
+with your own API key. The editor is available at `kora.aurel.id.vn`.
 
 ## What it does
 

@@ -7,11 +7,11 @@ export async function GET() {
   const productionLocked = isPublicGenerationLocked(process.env.NODE_ENV);
   return NextResponse.json(
     {
-      status: productionLocked ? 'not_ready' : 'ok',
+      status: 'ok',
       generation: productionLocked ? 'disabled' : 'local'
     },
     {
-      status: productionLocked ? 503 : 200,
+      status: 200,
       headers: { 'Cache-Control': 'no-store' }
     }
   );

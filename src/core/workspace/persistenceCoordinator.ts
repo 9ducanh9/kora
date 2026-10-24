@@ -17,13 +17,16 @@ export interface PersistenceStatus {
   lastSavedAt?: string;
 }
 
+type ScheduleTimer = (callback: () => void, timeout: number) => ReturnType<typeof setTimeout>;
+type CancelTimer = (timer: ReturnType<typeof setTimeout>) => void;
+
 export interface PersistenceCoordinatorOptions {
   adapter?: StorageAdapter;
   onStatus?: (status: PersistenceStatus) => void;
   debounceMs?: number;
   maxWaitMs?: number;
-  setTimer?: typeof setTimeout;
-  clearTimer?: typeof clearTimeout;
+  setTimer?: ScheduleTimer;
+  clearTimer?: CancelTimer;
   now?: () => Date;
 }
 
@@ -47,8 +50,8 @@ export class PersistenceCoordinator {
   private readonly onStatus?: (status: PersistenceStatus) => void;
   private readonly debounceMs: number;
   private readonly maxWaitMs: number;
-  private readonly setTimer: typeof setTimeout;
-  private readonly clearTimer: typeof clearTimeout;
+  private readonly setTimer: ScheduleTimer;
+  private readonly clearTimer: CancelTimer;
   private readonly now: () => Date;
   private debounceTimer: ReturnType<typeof setTimeout> | undefined;
   private maxWaitTimer: ReturnType<typeof setTimeout> | undefined;
@@ -67,8 +70,10 @@ export class PersistenceCoordinator {
     this.onStatus = options.onStatus;
     this.debounceMs = options.debounceMs ?? 600;
     this.maxWaitMs = options.maxWaitMs ?? 3000;
-    this.setTimer = options.setTimer ?? setTimeout;
-    this.clearTimer = options.clearTimer ?? clearTimeout;
+    // Browser timer functions require the Window receiver. Calling a captured
+    // native function as this.setTimer() otherwise throws Illegal invocation.
+    this.setTimer = options.setTimer ?? ((callback, timeout) => setTimeout(callback, timeout));
+    this.clearTimer = options.clearTimer ?? ((timer) => clearTimeout(timer));
     this.now = options.now ?? (() => new Date());
   }
 

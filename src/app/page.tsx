@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 import { CommandEngine } from '@/core/commands/commandEngine';
-import { DiagramDocument, createEmptyDiagramDocument } from '@/core/diagram/types';
+import { DiagramDocument } from '@/core/diagram/types';
 import { SetDiagramDocumentCommand } from '@/core/commands/commands';
 import { OperationCoordinator, OperationTicket } from '@/core/diagram/operationCoordinator';
 import { DIAGRAM_STORAGE_KEY } from '@/core/diagram/storage';
