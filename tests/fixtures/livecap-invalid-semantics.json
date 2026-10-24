@@ -1,0 +1,907 @@
+{
+  "version": "1.0",
+  "semantic": {
+    "scope": {
+      "type": "overall-architecture",
+      "title": "LiveCap - Real-time Bilingual Subtitles & Screen Sharing"
+    },
+    "nodes": {
+      "user": {
+        "id": "user",
+        "label": "Users (Host / Viewer)",
+        "kind": "external",
+        "assetId": "external.user"
+      },
+      "vercel": {
+        "id": "vercel",
+        "label": "Vercel Frontend",
+        "kind": "generic",
+        "assetId": "generic.component",
+        "subtitle": "React + TypeScript + Vite",
+        "containerId": "group-vercel"
+      },
+      "dns": {
+        "id": "dns",
+        "label": "Spaceship DNS",
+        "kind": "generic",
+        "assetId": "generic.component",
+        "subtitle": "livecap.logantai.com redirect"
+      },
+      "alb": {
+        "id": "alb",
+        "label": "Application Load Balancer",
+        "kind": "aws-resource",
+        "assetId": "aws.elb.alb",
+        "subtitle": "Internet-facing, ACM TLS",
+        "containerId": "vpc-1"
+      },
+      "ecs": {
+        "id": "ecs",
+        "label": "ECS Fargate (FastAPI)",
+        "kind": "aws-service",
+        "assetId": "aws.ecs.fargate",
+        "subtitle": "1 task, 0.5 vCPU, 1 GiB",
+        "containerId": "subnet-pub-1"
+      },
+      "ecr": {
+        "id": "ecr",
+        "label": "Amazon ECR",
+        "kind": "aws-service",
+        "assetId": "aws.ecr",
+        "subtitle": "Backend container image",
+        "containerId": "cloud-aws"
+      },
+      "cognito": {
+        "id": "cognito",
+        "label": "Amazon Cognito User Pool",
+        "kind": "aws-service",
+        "assetId": "aws.cognito",
+        "subtitle": "Google OAuth, admin group",
+        "containerId": "cloud-aws"
+      },
+      "transcribe": {
+        "id": "transcribe",
+        "label": "Amazon Transcribe Streaming",
+        "kind": "aws-service",
+        "assetId": "aws.transcribe",
+        "containerId": "cloud-aws"
+      },
+      "translate": {
+        "id": "translate",
+        "label": "Amazon Translate",
+        "kind": "aws-service",
+        "assetId": "aws.translate",
+        "containerId": "cloud-aws"
+      },
+      "dynamodb": {
+        "id": "dynamodb",
+        "label": "Amazon DynamoDB",
+        "kind": "aws-service",
+        "assetId": "aws.dynamodb",
+        "subtitle": "Metadata, quota, room data",
+        "containerId": "cloud-aws"
+      },
+      "s3": {
+        "id": "s3",
+        "label": "Amazon S3 (Private)",
+        "kind": "aws-service",
+        "assetId": "aws.s3",
+        "subtitle": "Transcript TXT export",
+        "containerId": "cloud-aws"
+      },
+      "secrets": {
+        "id": "secrets",
+        "label": "AWS Secrets Manager",
+        "kind": "aws-service",
+        "assetId": "aws.secretsmanager",
+        "subtitle": "DeepSeek & LiveKit credentials",
+        "containerId": "cloud-aws"
+      },
+      "cloudwatch": {
+        "id": "cloudwatch",
+        "label": "Amazon CloudWatch",
+        "kind": "aws-service",
+        "assetId": "aws.cloudwatch",
+        "subtitle": "Application/container logs",
+        "containerId": "cloud-aws"
+      },
+      "deepseek": {
+        "id": "deepseek",
+        "label": "DeepSeek API",
+        "kind": "external",
+        "assetId": "external.third-party",
+        "subtitle": "AI meeting notes"
+      },
+      "livekit": {
+        "id": "livekit",
+        "label": "LiveKit Cloud SFU",
+        "kind": "external",
+        "assetId": "external.third-party",
+        "subtitle": "WebRTC media",
+        "containerId": "group-livekit"
+      }
+    },
+    "connections": {
+      "conn-1": {
+        "id": "conn-1",
+        "source": "user",
+        "target": "dns",
+        "relationship": "request",
+        "label": "HTTPS"
+      },
+      "conn-2": {
+        "id": "conn-2",
+        "source": "dns",
+        "target": "vercel",
+        "relationship": "request",
+        "label": "Redirect"
+      },
+      "conn-3": {
+        "id": "conn-3",
+        "source": "user",
+        "target": "vercel",
+        "relationship": "request",
+        "label": "HTTPS"
+      },
+      "conn-4": {
+        "id": "conn-4",
+        "source": "vercel",
+        "target": "alb",
+        "relationship": "request",
+        "label": "HTTPS / WSS"
+      },
+      "conn-5": {
+        "id": "conn-5",
+        "source": "alb",
+        "target": "ecs",
+        "relationship": "request",
+        "label": "HTTP/WebSocket :8000"
+      },
+      "conn-6": {
+        "id": "conn-6",
+        "source": "ecs",
+        "target": "cognito",
+        "relationship": "auth",
+        "label": "Verify access token"
+      },
+      "conn-7": {
+        "id": "conn-7",
+        "source": "ecs",
+        "target": "transcribe",
+        "relationship": "data",
+        "label": "Streaming audio"
+      },
+      "conn-8": {
+        "id": "conn-8",
+        "source": "ecs",
+        "target": "translate",
+        "relationship": "data",
+        "label": "Translate text"
+      },
+      "conn-9": {
+        "id": "conn-9",
+        "source": "ecs",
+        "target": "dynamodb",
+        "relationship": "data",
+        "label": "Read/Write"
+      },
+      "conn-10": {
+        "id": "conn-10",
+        "source": "ecs",
+        "target": "s3",
+        "relationship": "data",
+        "label": "Presigned URL"
+      },
+      "conn-11": {
+        "id": "conn-11",
+        "source": "ecs",
+        "target": "secrets",
+        "relationship": "data",
+        "label": "Get credentials"
+      },
+      "conn-12": {
+        "id": "conn-12",
+        "source": "ecs",
+        "target": "cloudwatch",
+        "relationship": "data",
+        "label": "Logs"
+      },
+      "conn-13": {
+        "id": "conn-13",
+        "source": "ecs",
+        "target": "deepseek",
+        "relationship": "request",
+        "label": "AI meeting notes"
+      },
+      "conn-14": {
+        "id": "conn-14",
+        "source": "ecs",
+        "target": "livekit",
+        "relationship": "request",
+        "label": "Create room / token"
+      },
+      "conn-15": {
+        "id": "conn-15",
+        "source": "user",
+        "target": "livekit",
+        "relationship": "data",
+        "label": "WebRTC media"
+      },
+      "conn-16": {
+        "id": "conn-16",
+        "source": "ecr",
+        "target": "ecs",
+        "relationship": "association",
+        "label": "Container image"
+      }
+    },
+    "containers": {
+      "cloud-aws": {
+        "id": "cloud-aws",
+        "label": "AWS Cloud",
+        "type": "cloud",
+        "origin": "system"
+      },
+      "group-vercel": {
+        "id": "group-vercel",
+        "label": "Vercel",
+        "type": "generic-group",
+        "parentId": "cloud-aws"
+      },
+      "group-livekit": {
+        "id": "group-livekit",
+        "label": "LiveKit Cloud",
+        "type": "generic-group"
+      },
+      "vpc-1": {
+        "id": "vpc-1",
+        "label": "Default VPC",
+        "type": "vpc",
+        "parentId": "cloud-aws"
+      },
+      "subnet-pub-1": {
+        "id": "subnet-pub-1",
+        "label": "Public Subnet",
+        "type": "subnet-public",
+        "parentId": "vpc-1"
+      }
+    }
+  },
+  "presentation": {
+    "nodes": {
+      "vercel": {
+        "x": 859,
+        "y": 780.3399999999999,
+        "width": 96,
+        "height": 103
+      },
+      "ecs": {
+        "x": 1470,
+        "y": 905.5999999999999,
+        "width": 96,
+        "height": 117
+      },
+      "alb": {
+        "x": 1145,
+        "y": 886.1999999999999,
+        "width": 96,
+        "height": 103
+      },
+      "cloudwatch": {
+        "x": 1936,
+        "y": 407.99999999999994,
+        "width": 96,
+        "height": 103
+      },
+      "cognito": {
+        "x": 1936,
+        "y": 543,
+        "width": 96,
+        "height": 131
+      },
+      "dynamodb": {
+        "x": 1936,
+        "y": 979,
+        "width": 96,
+        "height": 103
+      },
+      "ecr": {
+        "x": 876,
+        "y": 935.3399999999999,
+        "width": 96,
+        "height": 103
+      },
+      "s3": {
+        "x": 1936,
+        "y": 102,
+        "width": 96,
+        "height": 117
+      },
+      "secrets": {
+        "x": 1936,
+        "y": 255,
+        "width": 96,
+        "height": 117
+      },
+      "transcribe": {
+        "x": 1936,
+        "y": 710,
+        "width": 96,
+        "height": 119
+      },
+      "translate": {
+        "x": 1936,
+        "y": 865,
+        "width": 96,
+        "height": 78
+      },
+      "livekit": {
+        "x": 2425,
+        "y": 678.04,
+        "width": 96,
+        "height": 105
+      },
+      "deepseek": {
+        "x": 2388,
+        "y": 486.03999999999996,
+        "width": 96,
+        "height": 92
+      },
+      "dns": {
+        "x": 397,
+        "y": 755.6199999999999,
+        "width": 96,
+        "height": 103
+      },
+      "user": {
+        "x": 50,
+        "y": 729.6599999999999,
+        "width": 96,
+        "height": 105
+      }
+    },
+    "containers": {
+      "cloud-aws": {
+        "x": 793,
+        "y": 50,
+        "width": 1263,
+        "height": 1056
+      },
+      "group-vercel": {
+        "x": 822,
+        "y": 740.3399999999999,
+        "width": 150,
+        "height": 159
+      },
+      "vpc-1": {
+        "x": 1124,
+        "y": 815.5999999999999,
+        "width": 576,
+        "height": 245
+      },
+      "subnet-pub-1": {
+        "x": 1431,
+        "y": 861.5999999999999,
+        "width": 244,
+        "height": 179
+      },
+      "group-livekit": {
+        "x": 2388,
+        "y": 638.04,
+        "width": 149,
+        "height": 161
+      }
+    },
+    "connections": {
+      "conn-1": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 146,
+              "y": 794.7599999999999
+            },
+            {
+              "x": 397,
+              "y": 794.7599999999999
+            }
+          ],
+          "label": {
+            "x": 247,
+            "y": 783.2599999999999,
+            "width": 49,
+            "height": 23
+          }
+        }
+      },
+      "conn-10": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1566,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1924,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1924,
+              "y": 146.46
+            },
+            {
+              "x": 1936,
+              "y": 146.46
+            }
+          ],
+          "label": {
+            "x": 1827,
+            "y": 550.8,
+            "width": 93,
+            "height": 23
+          }
+        }
+      },
+      "conn-11": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1566,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1924,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1924,
+              "y": 299.46
+            },
+            {
+              "x": 1936,
+              "y": 299.46
+            }
+          ],
+          "label": {
+            "x": 1824,
+            "y": 627.3,
+            "width": 96,
+            "height": 23
+          }
+        }
+      },
+      "conn-12": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1566,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1924,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1924,
+              "y": 447.13999999999993
+            },
+            {
+              "x": 1936,
+              "y": 447.13999999999993
+            }
+          ],
+          "label": {
+            "x": 1880,
+            "y": 701.1399999999999,
+            "width": 40,
+            "height": 23
+          }
+        }
+      },
+      "conn-13": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1566,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1647,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1647,
+              "y": 968.1399999999999
+            },
+            {
+              "x": 1745,
+              "y": 968.1399999999999
+            },
+            {
+              "x": 1745,
+              "y": 521
+            },
+            {
+              "x": 2388,
+              "y": 521
+            }
+          ],
+          "label": {
+            "x": 2040.5,
+            "y": 494,
+            "width": 105,
+            "height": 23
+          }
+        }
+      },
+      "conn-14": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1566,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1755,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1755,
+              "y": 532
+            },
+            {
+              "x": 2071,
+              "y": 532
+            },
+            {
+              "x": 2071,
+              "y": 717.9399999999999
+            },
+            {
+              "x": 2425,
+              "y": 717.9399999999999
+            }
+          ],
+          "label": {
+            "x": 1617,
+            "y": 743.5699999999999,
+            "width": 122,
+            "height": 23
+          }
+        }
+      },
+      "conn-15": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 146,
+              "y": 794.7599999999999
+            },
+            {
+              "x": 167,
+              "y": 794.7599999999999
+            },
+            {
+              "x": 167,
+              "y": 1116
+            },
+            {
+              "x": 2293,
+              "y": 1116
+            },
+            {
+              "x": 2293,
+              "y": 727.9399999999999
+            },
+            {
+              "x": 2414,
+              "y": 727.9399999999999
+            },
+            {
+              "x": 2414,
+              "y": 717.9399999999999
+            },
+            {
+              "x": 2425,
+              "y": 717.9399999999999
+            }
+          ],
+          "label": {
+            "x": 1183,
+            "y": 1120,
+            "width": 94,
+            "height": 23
+          }
+        }
+      },
+      "conn-16": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 972,
+              "y": 999.1999999999999
+            },
+            {
+              "x": 1458,
+              "y": 999.1999999999999
+            },
+            {
+              "x": 1458,
+              "y": 950.06
+            },
+            {
+              "x": 1470,
+              "y": 950.06
+            }
+          ],
+          "label": {
+            "x": 1164,
+            "y": 1003.1999999999999,
+            "width": 102,
+            "height": 23
+          }
+        }
+      },
+      "conn-2": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 493,
+              "y": 819.4799999999999
+            },
+            {
+              "x": 859,
+              "y": 819.4799999999999
+            }
+          ],
+          "label": {
+            "x": 646.5,
+            "y": 792.4799999999999,
+            "width": 59,
+            "height": 23
+          }
+        }
+      },
+      "conn-3": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 146,
+              "y": 794.7599999999999
+            },
+            {
+              "x": 157,
+              "y": 794.7599999999999
+            },
+            {
+              "x": 157,
+              "y": 1153
+            },
+            {
+              "x": 698,
+              "y": 1153
+            },
+            {
+              "x": 698,
+              "y": 829.4799999999999
+            },
+            {
+              "x": 848,
+              "y": 829.4799999999999
+            },
+            {
+              "x": 848,
+              "y": 819.4799999999999
+            },
+            {
+              "x": 859,
+              "y": 819.4799999999999
+            }
+          ],
+          "label": {
+            "x": 403,
+            "y": 1141.5,
+            "width": 49,
+            "height": 23
+          }
+        }
+      },
+      "conn-4": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 955,
+              "y": 844.1999999999999
+            },
+            {
+              "x": 1050,
+              "y": 844.1999999999999
+            },
+            {
+              "x": 1050,
+              "y": 925.3399999999999
+            },
+            {
+              "x": 1145,
+              "y": 925.3399999999999
+            }
+          ],
+          "label": {
+            "x": 959.5,
+            "y": 832.6999999999999,
+            "width": 86,
+            "height": 23
+          }
+        }
+      },
+      "conn-5": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1241,
+              "y": 950.06
+            },
+            {
+              "x": 1470,
+              "y": 950.06
+            }
+          ],
+          "label": {
+            "x": 1283.5,
+            "y": 938.56,
+            "width": 144,
+            "height": 23
+          }
+        }
+      },
+      "conn-6": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1566,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1924,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1924,
+              "y": 592.78
+            },
+            {
+              "x": 1936,
+              "y": 592.78
+            }
+          ],
+          "label": {
+            "x": 1800,
+            "y": 773.9599999999999,
+            "width": 120,
+            "height": 23
+          }
+        }
+      },
+      "conn-7": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1566,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1751,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1751,
+              "y": 755.22
+            },
+            {
+              "x": 1936,
+              "y": 755.22
+            }
+          ],
+          "label": {
+            "x": 1767,
+            "y": 855.18,
+            "width": 102,
+            "height": 23
+          }
+        }
+      },
+      "conn-8": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1566,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1751,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1751,
+              "y": 894.64
+            },
+            {
+              "x": 1936,
+              "y": 894.64
+            }
+          ],
+          "label": {
+            "x": 1614.5,
+            "y": 982.1399999999999,
+            "width": 88,
+            "height": 23
+          }
+        }
+      },
+      "conn-9": {
+        "route": {
+          "version": "1.0",
+          "inputSignature": "dd79ba64b7d825ba1501247d1e0b5452ff3bd234050a8882685453121b1224a1",
+          "points": [
+            {
+              "x": 1566,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1751,
+              "y": 978.1399999999999
+            },
+            {
+              "x": 1751,
+              "y": 1018.14
+            },
+            {
+              "x": 1936,
+              "y": 1018.14
+            }
+          ],
+          "label": {
+            "x": 1621,
+            "y": 939.1399999999999,
+            "width": 75,
+            "height": 23
+          }
+        }
+      }
+    },
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  }
+}

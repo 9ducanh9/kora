@@ -45,7 +45,7 @@ function mutation(change, expectedCode){const model=clone(good);change(model);as
     assert.deepEqual(checkSemanticRequirements(prepareArchitectureModel(good),requirements),[]);
   });
   await check('the current bad UI graph fails semantic checks although its IR is valid',()=>{
-    const d=JSON.parse(fs.readFileSync('docs/audits/20261018-parser-user-input/current-diagram.json','utf8'));
+    const d=JSON.parse(fs.readFileSync('tests/fixtures/livecap-invalid-semantics.json','utf8'));
     const model={version:'1.0',nodes:Object.values(d.semantic.nodes),connections:Object.values(d.semantic.connections),containers:Object.values(d.semantic.containers)};
     assert.equal(validateArchitectureModel(model).ok,true);
     const codes=checkSemanticRequirements(model,requirements).map(i=>i.code);

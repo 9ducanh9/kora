@@ -6,7 +6,7 @@ const {composeArchitecture,facingSides}=require('../src/core/layout/architecture
 const {measureVisuals}=require('../src/core/layout/visualMetrics.ts');
 const {validateDiagramDocument}=require('../src/core/diagram/validator.ts');
 const {resolveConnectionAnchor}=require('../src/core/layout/anchors.ts');
-const before=require('../docs/audits/20261018-livecap-feedback/live-result.json');
+const before=require('../tests/fixtures/livecap-layout-regression.json');
 const model={version:'1.0',scope:before.semantic.scope,nodes:Object.values(before.semantic.nodes),containers:Object.values(before.semantic.containers),connections:Object.values(before.semantic.connections)};
 const bounds=p=>{const b=[...Object.values(p.nodes),...Object.values(p.containers)];return {width:Math.max(...b.map(r=>r.x+r.width))-Math.min(...b.map(r=>r.x)),height:Math.max(...b.map(r=>r.y+r.height))-Math.min(...b.map(r=>r.y))};};
 let passed=0;const check=(name,fn)=>{fn();console.log('PASS '+name);passed++;};
